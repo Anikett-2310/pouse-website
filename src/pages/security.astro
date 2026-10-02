@@ -1,0 +1,356 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import TechnicalDetails from '../components/TechnicalDetails.astro';
+import PlaceholderSlot from '../components/PlaceholderSlot.astro';
+---
+
+<BaseLayout
+  title="Security & Privacy Model — Pouse"
+  description="Practical, transparent overview of Pouse's local communication model, pairing tokens, Bluetooth TOFU authorization, and threat boundaries."
+>
+  <div class="security-page">
+    <div class="container-narrow">
+      <div class="page-header">
+        <span class="badge badge-brand">Safety Architecture</span>
+        <h1 class="page-title">Security &amp; Privacy Model</h1>
+        <p class="page-subtitle">
+          A practical, transparent explanation of how Pouse secures input control across local networks and Bluetooth connections.
+        </p>
+      </div>
+
+      <!-- Core Principle: Local-Only -->
+      <div class="card card-elevated principle-card">
+        <div class="principle-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
+        </div>
+        <div class="principle-content">
+          <h2 class="principle-title">Local Communication Only</h2>
+          <p class="principle-desc">
+            Pouse does not route your keystrokes, mouse coordinates, camera data, or screen video stream through any cloud relay, external server, or third-party service. Data travels directly between your phone and your PC over your local Wi-Fi subnet or direct Bluetooth radio link.
+          </p>
+        </div>
+      </div>
+
+      <!-- Wi-Fi Security Section -->
+      <div class="content-section content-visibility-auto">
+        <h2 class="section-title">Wi-Fi Connection Security</h2>
+        <p>
+          On a shared Wi-Fi network, anyone connected to the same router can send packets to your PC's IP address. For this reason, <strong>same-network reachability alone is never treated as authentication</strong>.
+        </p>
+
+        <div class="security-cards-grid stagger-group">
+          <div class="card subcard reveal">
+            <h3 class="subcard-title">1. Cryptographic Pair Token</h3>
+            <p class="subcard-desc">
+              During initial setup, the Windows PC generates a 128-bit random pair token using the Windows Cryptography Next Generation (CNG) system. This token is encoded into the setup QR code. When the Android app connects to the PC's WebSocket, it must present this token. Connections lacking a valid pair token are rejected before any input is accepted.
+            </p>
+          </div>
+
+          <div class="card subcard reveal">
+            <h3 class="subcard-title">2. Optional Wi-Fi Password (DPAPI)</h3>
+            <p class="subcard-desc">
+              For shared networks (such as offices or public spaces), you can require a secondary Wi-Fi password in the PC preferences. On Windows, this password is encrypted at rest using Windows Data Protection API (DPAPI). When enabled, incoming clients must supply both the pair token and the password.
+            </p>
+            <div style="margin-top: 16px; max-width: 480px;">
+              <PlaceholderSlot
+                assetId="pc-preferences"
+                label="Windows DPAPI Password Setting"
+                description="Preferences panel showing DPAPI password configuration and pair token reset."
+                aspectRatio="16/9"
+                deviceType="desktop"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bluetooth Security Section -->
+      <div class="content-section content-visibility-auto reveal">
+        <h2 class="section-title">Bluetooth Security &amp; Trust Model</h2>
+        <p>
+          Bluetooth connections do not use the pair token mechanism. Instead, they rely on a three-layer defense model:
+        </p>
+
+        <div class="security-layers-list">
+          <div class="layer-item card">
+            <span class="layer-num">Layer 1</span>
+            <div class="layer-content">
+              <h3 class="layer-title">OS-Level Bluetooth Pairing</h3>
+              <p class="layer-desc">
+                Standard Windows and Android Bluetooth pairing with PIN / passkey confirmation. Unknown, unpaired devices cannot establish a raw RFCOMM socket with the Pouse PC client.
+              </p>
+            </div>
+          </div>
+
+          <div class="layer-item card">
+            <span class="layer-num">Layer 2</span>
+            <div class="layer-content">
+              <h3 class="layer-title">Application Trust-On-First-Use (TOFU)</h3>
+              <p class="layer-desc">
+                On the Android side, before sending any input events to a paired PC, the app presents a confirmation dialog showing the PC's Bluetooth address. If you reject the prompt, the connection is closed immediately and no events are ever sent.
+              </p>
+              <div style="margin-top: 16px; max-width: 260px;">
+                <PlaceholderSlot
+                  assetId="bluetooth-discovery"
+                  label="Android TOFU Trust Prompt"
+                  description="Real screenshot showing Bluetooth discovery and the TOFU connection confirmation prompt."
+                  aspectRatio="9/16"
+                  deviceType="phone"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="layer-item card">
+            <span class="layer-num">Layer 3</span>
+            <div class="layer-content">
+              <h3 class="layer-title">Deferred Input Ownership (PC Gate)</h3>
+              <p class="layer-desc">
+                Even if an RFCOMM socket connects and completes the initial handshake, the PC client does not grant input injection control until the first authorized input event arrives from the trusted phone.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Known Limitation Notice (Plain Language) -->
+      <div class="notice-box">
+        <div class="notice-title">Development Limitation Notice:</div>
+        <div class="notice-body">
+          The Bluetooth discovery beacon currently uses a development-stage identifier. As a result, Bluetooth automatic discovery should be considered an active development feature rather than a final, certified public standard. Manual connection remains functional.
+        </div>
+      </div>
+
+      <!-- Collapsible Technical Threat Model -->
+      <TechnicalDetails title="Technical threat model & cryptographic specifications">
+        <div class="threat-details">
+          <h4>Threat Model &amp; Mitigations (Master Specification)</h4>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Threat</th>
+                  <th>L1 (OS Pairing)</th>
+                  <th>L2 (TOFU)</th>
+                  <th>L3 (Deferred Owner)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Unknown device RFCOMM connect</td>
+                  <td>Blocked</td>
+                  <td>—</td>
+                  <td>—</td>
+                </tr>
+                <tr>
+                  <td>Paired phone silently injects input</td>
+                  <td>—</td>
+                  <td>TOFU prompt</td>
+                  <td>—</td>
+                </tr>
+                <tr>
+                  <td>Untrusted BT displaces active Wi-Fi</td>
+                  <td>—</td>
+                  <td>Android gate</td>
+                  <td>Deferred InputOwner</td>
+                </tr>
+                <tr>
+                  <td>Malicious app on trusted paired phone</td>
+                  <td>—</td>
+                  <td>Per-BD_ADDR trust</td>
+                  <td>—</td>
+                </tr>
+                <tr>
+                  <td>BD_ADDR spoofing after trust grant</td>
+                  <td>Not addressed</td>
+                  <td>Not addressed</td>
+                  <td>—</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="threat-note">
+            <em>Bluetooth security note:</em> Bluetooth security relies strictly on OS-level pairing (Layer 1) + Pouse TOFU confirmation (Layer 2) + deferred InputOwner acquisition on the PC (Layer 3). No cryptographic mutual authentication exists for Bluetooth beyond these layers. BD_ADDR spoofing after trust grant is not addressed in V1.
+          </p>
+
+          <h4>Data Storage on Windows</h4>
+          <p>
+            Pouse stores configuration in <code>%APPDATA%\Pouse\config.json</code>. The pairing token is kept in configuration. When the optional Wi-Fi password feature is enabled, the secret is encrypted using Windows DPAPI (<code>CryptProtectData</code>) and cannot be decrypted without the user's Windows login credentials. Plaintext passwords are never written to disk or logs.
+          </p>
+
+          <h4>Camera Video Processing</h4>
+          <p>
+            Touchless mode analyzes front-camera video frames on the phone using on-device MediaPipe. Camera frames are processed on the phone and are not sent to the PC or across the network. Only hand landmark coordinate deltas are sent to the PC.
+          </p>
+        </div>
+      </TechnicalDetails>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .security-page {
+    padding: 64px 0 96px;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .page-title {
+    font-size: clamp(2.2rem, 3.5vw + 1rem, 3.2rem);
+  }
+
+  .page-subtitle {
+    font-size: 1.05rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+  }
+
+  .principle-card {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    padding: 32px;
+    margin-bottom: 48px;
+    background: linear-gradient(135deg, rgba(13, 7, 21, 0.9) 0%, rgba(22, 13, 37, 0.9) 100%);
+    border-color: var(--color-border-medium);
+  }
+
+  .principle-icon {
+    color: var(--color-pink-accent);
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+
+  .principle-title {
+    font-size: 1.35rem;
+    margin-bottom: 8px;
+  }
+
+  .principle-desc {
+    font-size: 0.96rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .content-section {
+    margin-bottom: 48px;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--color-border-subtle);
+  }
+
+  .security-cards-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    margin-top: 20px;
+  }
+
+  @media (min-width: 680px) {
+    .security-cards-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .subcard {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 20px;
+  }
+
+  .subcard-title {
+    font-size: 1.05rem;
+    margin: 0;
+    color: var(--color-text-primary);
+  }
+
+  .subcard-desc {
+    font-size: 0.88rem;
+    color: var(--color-text-secondary);
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  .security-layers-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 20px;
+  }
+
+  .layer-item {
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+    padding: 20px;
+  }
+
+  .layer-num {
+    flex-shrink: 0;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--color-purple-light);
+    background-color: var(--color-bg-canvas);
+    border: 1px solid var(--color-border-subtle);
+    padding: 4px 10px;
+    border-radius: 6px;
+  }
+
+  .layer-content {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .layer-title {
+    font-size: 1.1rem;
+    margin: 0;
+    color: var(--color-text-primary);
+  }
+
+  .layer-desc {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  .threat-details {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .threat-details h4 {
+    font-size: 1rem;
+    color: var(--color-purple-light);
+    margin-top: 8px;
+  }
+
+  .threat-details p {
+    font-size: 0.88rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .threat-details code {
+    color: var(--color-purple-light);
+  }
+</style>

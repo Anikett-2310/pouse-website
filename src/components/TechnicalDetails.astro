@@ -1,0 +1,65 @@
+---
+interface Props {
+  title?: string;
+}
+
+const { title = 'Technical details & system invariants' } = Astro.props;
+---
+
+<details class="technical-details">
+  <summary>{title}</summary>
+  <div class="details-content">
+    <slot />
+  </div>
+</details>
+
+<style>
+  details.technical-details {
+    background-color: var(--color-bg-surface-elevated);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin: 24px 0;
+    transition: border-color 0.2s ease;
+  }
+
+  details.technical-details[open] {
+    border-color: var(--color-border-medium);
+  }
+
+  details.technical-details summary {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--color-purple-light);
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    user-select: none;
+    min-height: 36px;
+  }
+
+  details.technical-details summary::-webkit-details-marker {
+    display: none;
+  }
+
+  details.technical-details summary::after {
+    content: "▾";
+    font-size: 1.1rem;
+    transition: transform 0.2s ease;
+  }
+
+  details.technical-details[open] summary::after {
+    transform: rotate(180deg);
+  }
+
+  .details-content {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--color-border-subtle);
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+  }
+</style>

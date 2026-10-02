@@ -1,0 +1,399 @@
+---
+import fs from 'fs';
+import path from 'path';
+import mediaManifest from '../config/media-manifest.json';
+
+interface Props {
+  label: string;
+  assetId: string;
+  description?: string;
+  aspectRatio?: '16/9' | '9/16' | '4/3' | '1/1' | 'auto';
+  deviceType?: 'phone' | 'desktop' | 'auto';
+  className?: string;
+  lazy?: boolean;
+  fetchPriority?: 'high' | 'low' | 'auto';
+  showCaption?: boolean;
+}
+
+const {
+  label,
+  assetId,
+  description = '',
+  aspectRatio = '9/16',
+  deviceType = 'auto',
+  className = '',
+  lazy = true,
+  fetchPriority = 'auto',
+  showCaption = true,
+} = Astro.props;
+
+// Determine device framing
+const effectiveDevice = deviceType === 'auto'
+  ? (assetId.startsWith('pc-') ? 'desktop' : 'phone')
+  : deviceType;
+
+// Check for real media in public/media/ at build time
+const mediaDir = path.join(process.cwd(), 'public', 'media');
+
+let foundMedia: {
+  fileName: string;
+  url: string;
+  isVideo: boolean;
+  sizeBytes: number;
+  srcset?: string;
+  sizes?: string;
+  poster?: string;
+} | null = null;
+
+if (fs.existsSync(mediaDir)) {
+  const candidates = [
+    `${assetId}.webp`,
+    `${assetId}-540w.webp`,
+    `${assetId}-720w.webp`,
+    `${assetId}.png`,
+    `${assetId}.jpg`,
+    `${assetId}.jpeg`,
+    `${assetId}.mp4`,
+    `${assetId}.webm`,
+    `${assetId}-demo.mp4`,
+    `${assetId}-demo.webm`,
+  ];
+
+  for (const candidate of candidates) {
+    const fullPath = path.join(mediaDir, candidate);
+    if (fs.existsSync(fullPath)) {
+      const stats = fs.statSync(fullPath);
+      const isVideo = candidate.endsWith('.mp4') || candidate.endsWith('.webm');
+
+      let srcset: string | undefined = undefined;
+      let sizes: string | undefined = undefined;
+      let poster: string | undefined = undefined;
+
+      if (!isVideo) {
+        if (effectiveDevice === 'phone') {
+          // Check for responsive phone widths
+          const variants = [
+            { w: 360, f: `${assetId}-360w.webp` },
+            { w: 540, f: `${assetId}-540w.webp` },
+            { w: 720, f: `${assetId}-720w.webp` },
+          ].filter(v => fs.existsSync(path.join(mediaDir, v.f)));
+
+          if (variants.length > 0) {
+            srcset = variants.map(v => `/media/${v.f} ${v.w}w`).join(', ');
+            sizes = '(max-width: 640px) 240px, clamp(180px, 22vw, 280px)';
+          }
+        } else {
+          // Check for responsive desktop widths
+          const widths = assetId === 'pc-tray-menu'
+            ? [{ w: 360, f: `${assetId}-360w.webp` }, { w: 550, f: `${assetId}-550w.webp` }]
+            : [{ w: 640, f: `${assetId}-640w.webp` }, { w: 960, f: `${assetId}-960w.webp` }];
+          const variants = widths.filter(v => fs.existsSync(path.join(mediaDir, v.f)));
+
+          if (variants.length > 0) {
+            srcset = variants.map(v => `/media/${v.f} ${v.w}w`).join(', ');
+            sizes = '(max-width: 768px) 100vw, 640px';
+          }
+        }
+      } else {
+        // Video poster
+        const posterCandidates = [`${assetId}-poster.webp`, `${assetId}.webp`, `${assetId}-720w.webp`];
+        for (const pc of posterCandidates) {
+          if (fs.existsSync(path.join(mediaDir, pc))) {
+            poster = `/media/${pc}`;
+            break;
+          }
+        }
+      }
+
+      foundMedia = {
+        fileName: candidate,
+        url: `/media/${candidate}`,
+        isVideo,
+        sizeBytes: stats.size,
+        srcset,
+        sizes,
+        poster,
+      };
+
+      if (stats.size > 500 * 1024) {
+        console.warn(`\x1b[33m[Media Warning]\x1b[0m public/media/${candidate} is ${(stats.size / 1024).toFixed(1)} KB (> 500 KB limit). Please optimize.`);
+      }
+      break;
+    }
+  }
+}
+
+// Retrieve exact build-time dimensions from media-manifest.json
+const manifestData = (mediaManifest as Record<string, { width: number; height: number; aspectRatio: string; ratio: number; type: string }>)[assetId];
+
+const realWidth = manifestData?.width ?? (effectiveDevice === 'phone' ? 738 : (assetId === 'pc-tray-menu' ? 550 : 1600));
+const realHeight = manifestData?.height ?? (effectiveDevice === 'phone' ? 1424 : (assetId === 'pc-tray-menu' ? 689 : 1074));
+const aspectRatioStr = manifestData?.aspectRatio ?? `${realWidth} / ${realHeight}`;
+const ratioVal = manifestData?.ratio ?? Number((realWidth / realHeight).toFixed(5));
+---
+
+{foundMedia ? (
+  <figure class={`real-media-container ${effectiveDevice} ${className}`}>
+    <div
+      class={`device-shell ${effectiveDevice}-shell`}
+      style={`--media-aspect-ratio: ${aspectRatioStr}; --media-ratio: ${ratioVal}; aspect-ratio: ${aspectRatioStr};`}
+    >
+      {foundMedia.isVideo ? (
+        <video
+          src={foundMedia.url}
+          class="media-video"
+          width={realWidth}
+          height={realHeight}
+          controls
+          playsinline
+          loop
+          muted
+          preload="none"
+          poster={foundMedia.poster}
+          aria-label={label}
+          data-auto-play-visible="true"
+        >
+          <p>Your browser does not support HTML5 video for {label}.</p>
+        </video>
+      ) : (
+        <img
+          src={foundMedia.url}
+          srcset={foundMedia.srcset}
+          sizes={foundMedia.sizes}
+          alt={description || label}
+          width={realWidth}
+          height={realHeight}
+          loading={lazy ? 'lazy' : 'eager'}
+          decoding="async"
+          fetchpriority={fetchPriority}
+          class="media-image"
+        />
+      )}
+    </div>
+    {showCaption && (
+      <figcaption class="media-caption">
+        <span class="caption-title">{label}</span>
+        {description && <span class="caption-desc">{description}</span>}
+      </figcaption>
+    )}
+  </figure>
+) : (
+  <div class={`placeholder-slot ${effectiveDevice} ${aspectRatio} ${className}`} role="figure" aria-label={`Placeholder for ${label}`}>
+    <div class="slot-content">
+      <div class="slot-badge-row">
+        <span class="badge badge-outline">Asset Slot</span>
+        <code class="slot-id">{assetId}</code>
+      </div>
+      
+      <div class="slot-center-icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="2" y="2" width="20" height="20" rx="4"></rect>
+          <path d="m21 15-5-5L5 21"></path>
+          <circle cx="9" cy="9" r="2"></circle>
+        </svg>
+      </div>
+
+      <h4 class="slot-title">{label}</h4>
+      {description && <p class="slot-desc">{description}</p>}
+      <span class="slot-instruction">Drop <code>{assetId}.webp</code> into <code>media-source/</code></span>
+    </div>
+  </div>
+)}
+
+<style>
+  /* Real Media Presentation with Capped CSS Device Frames */
+  .real-media-container {
+    margin: 0 auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  /* Phone Frame: Capped width min(clamp(180px, 22vw, 280px), calc(62vh * var(--media-ratio, 0.51826))) on desktop */
+  .phone-shell {
+    position: relative;
+    width: min(clamp(180px, 22vw, 280px), calc(62vh * var(--media-ratio, 0.51826)));
+    height: auto;
+    aspect-ratio: var(--media-aspect-ratio, 738 / 1424);
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 28px;
+    border: 5px solid #160D24;
+    box-shadow:
+      0 20px 48px -10px rgba(0, 0, 0, 0.75),
+      0 0 0 1px rgba(168, 85, 247, 0.25),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+    background: transparent;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  .phone-shell .media-image,
+  .phone-shell .media-video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+  }
+
+  /* Desktop / Wide Frame: max-width about 640px, keeping natural ratio */
+  .desktop-shell {
+    position: relative;
+    width: 100%;
+    max-width: min(640px, calc(62vh * var(--media-ratio, 1.48976)));
+    height: auto;
+    aspect-ratio: var(--media-aspect-ratio, 1600 / 1074);
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 12px;
+    border: 2px solid rgba(168, 85, 247, 0.28);
+    box-shadow:
+      0 18px 40px rgba(0, 0, 0, 0.65),
+      0 0 16px rgba(168, 85, 247, 0.12),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    background: transparent;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  .desktop-shell .media-image,
+  .desktop-shell .media-video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+  }
+
+  .media-caption {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 4px;
+    max-width: 480px;
+    padding: 0 8px;
+  }
+
+  .caption-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+
+  .caption-desc {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    line-height: 1.4;
+  }
+
+  /* Labeled Placeholder Styling */
+  .placeholder-slot {
+    width: 100%;
+    background: linear-gradient(145deg, rgba(13, 7, 21, 0.7) 0%, rgba(22, 13, 37, 0.5) 100%);
+    border: 2px dashed var(--color-border-medium);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .placeholder-slot.phone {
+    width: min(clamp(180px, 22vw, 280px), calc(62vh * 0.51826));
+    max-width: 280px;
+    aspect-ratio: 738 / 1424;
+    margin: 0 auto;
+  }
+
+  .placeholder-slot.desktop {
+    max-width: 640px;
+    aspect-ratio: 16 / 10;
+    margin: 0 auto;
+  }
+
+  .slot-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    max-width: 360px;
+  }
+
+  .slot-badge-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .slot-id {
+    font-size: 0.75rem;
+    color: var(--color-purple-light);
+    background-color: var(--color-bg-canvas);
+    padding: 2px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--color-border-subtle);
+    font-family: monospace;
+  }
+
+  .slot-center-icon {
+    color: var(--color-purple-primary);
+    opacity: 0.75;
+  }
+
+  .slot-title {
+    font-size: 0.95rem;
+    color: var(--color-text-primary);
+    margin: 0;
+  }
+
+  .slot-desc {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  .slot-instruction {
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+  }
+
+  .slot-instruction code {
+    color: var(--color-pink-accent);
+    background: rgba(236, 72, 153, 0.1);
+    padding: 1px 4px;
+    border-radius: 4px;
+  }
+
+  /* Mobile Capping (<= 640px) */
+  @media (max-width: 640px) {
+    .phone-shell {
+      width: min(240px, calc(62vh * var(--media-ratio, 0.51826)));
+      max-width: 240px;
+      border-width: 4px;
+      border-radius: 22px;
+    }
+    .placeholder-slot.phone {
+      width: min(240px, calc(62vh * 0.51826));
+      max-width: 240px;
+    }
+    .desktop-shell {
+      max-width: 100%;
+      border-radius: 10px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    video {
+      animation: none !important;
+    }
+  }
+</style>

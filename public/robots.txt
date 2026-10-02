@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://pouse.app/sitemap-index.xml

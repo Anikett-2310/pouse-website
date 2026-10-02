@@ -1,0 +1,354 @@
+---
+import { RELEASE_CONFIG } from '../config/release';
+
+const currentPath = Astro.url.pathname;
+const isCurrent = (path: string) => {
+  if (path === '/') return currentPath === '/';
+  return currentPath.startsWith(path);
+};
+---
+
+<header class="site-header" id="siteHeader">
+  <div class="scroll-progress-bar" id="scrollProgressBar" aria-hidden="true"></div>
+  <div class="container header-inner">
+    <!-- Brand Logo -->
+    <a href="/" class="brand-link" aria-label="Pouse Home">
+      <img src="/assets/pouse-logo.png" alt="Pouse icon" width="36" height="36" class="brand-icon" />
+      <span class="brand-name">Pouse</span>
+      <span class="badge badge-brand version-badge">v{RELEASE_CONFIG.VERSION}</span>
+    </a>
+
+    <!-- Desktop Navigation -->
+    <nav class="desktop-nav" aria-label="Main Navigation">
+      <ul class="nav-list">
+        {RELEASE_CONFIG.NAV_LINKS.map((link) => (
+          <li>
+            <a
+              href={link.href}
+              class={`nav-link ${isCurrent(link.href) ? 'active' : ''}`}
+              aria-current={isCurrent(link.href) ? 'page' : undefined}
+            >
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <!-- Header Actions -->
+    <div class="header-actions">
+      <a
+        href={RELEASE_CONFIG.GITHUB_REPO}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="github-link"
+        aria-label="View source code on GitHub"
+        title="View source code on GitHub"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path>
+        </svg>
+        <span class="github-text">GitHub</span>
+      </a>
+
+      <a href="/download" class="btn btn-primary btn-sm header-cta">
+        Download
+      </a>
+
+      <!-- Mobile Menu Button -->
+      <button
+        type="button"
+        class="mobile-menu-btn"
+        id="mobileMenuToggle"
+        aria-label="Toggle navigation menu"
+        aria-expanded="false"
+        aria-controls="mobileDrawer"
+      >
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Drawer -->
+  <div class="mobile-drawer" id="mobileDrawer" aria-hidden="true">
+    <div class="container mobile-drawer-inner">
+      <nav aria-label="Mobile Navigation">
+        <ul class="mobile-nav-list">
+          {RELEASE_CONFIG.NAV_LINKS.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                class={`mobile-nav-link ${isCurrent(link.href) ? 'active' : ''}`}
+              >
+                {link.label}
+              </a>
+            </li>
+          ))}
+          <li>
+            <a href="/download" class="mobile-nav-link highlight">Download v{RELEASE_CONFIG.VERSION}</a>
+          </li>
+          <li>
+            <a
+              href={RELEASE_CONFIG.GITHUB_REPO}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="mobile-nav-link external"
+            >
+              Source code on GitHub ↗
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    width: 100%;
+    height: var(--header-height);
+    background-color: rgba(7, 4, 11, 0.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--color-border-subtle);
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+
+  .site-header.scrolled {
+    background-color: rgba(7, 4, 11, 0.98);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+    border-color: var(--color-border-medium);
+  }
+
+  @media (max-width: 640px) {
+    .site-header,
+    .site-header.scrolled {
+      background-color: #07040B;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+  }
+
+  .header-inner {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .brand-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--color-text-primary);
+  }
+
+  .brand-icon {
+    border-radius: 9px;
+    box-shadow: 0 0 12px rgba(168, 85, 247, 0.35);
+  }
+
+  .brand-name {
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #FFFFFF 0%, #E9D5FF 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .version-badge {
+    font-size: 0.72rem;
+    padding: 2px 7px;
+  }
+
+  .desktop-nav {
+    display: none;
+  }
+
+  .nav-list {
+    display: flex;
+    list-style: none;
+    gap: 8px;
+  }
+
+  .nav-link {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-size: 0.92rem;
+    font-weight: 500;
+    padding: 8px 14px;
+    border-radius: 8px;
+    transition: all 0.15s ease;
+  }
+
+  .nav-link:hover {
+    color: #FFFFFF;
+    background-color: var(--color-bg-surface);
+  }
+
+  .nav-link.active {
+    color: #FFFFFF;
+    background-color: var(--color-bg-surface-elevated);
+    border: 1px solid var(--color-border-subtle);
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .github-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border: 1px solid transparent;
+    transition: all 0.15s ease;
+    min-height: 44px;
+  }
+
+  .github-link:hover {
+    color: #FFFFFF;
+    border-color: var(--color-border-subtle);
+    background-color: var(--color-bg-surface);
+  }
+
+  .btn-sm {
+    min-height: 38px;
+    padding: 6px 16px;
+    font-size: 0.88rem;
+  }
+
+  .mobile-menu-btn {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 44px;
+    height: 44px;
+    background: transparent;
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 10px;
+  }
+
+  .mobile-menu-btn .bar {
+    width: 100%;
+    height: 2px;
+    background-color: var(--color-text-primary);
+    border-radius: 2px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+
+  .mobile-drawer {
+    display: none;
+    position: absolute;
+    top: var(--header-height);
+    left: 0;
+    width: 100%;
+    background-color: var(--color-bg-surface);
+    border-bottom: 1px solid var(--color-border-medium);
+    padding: 16px 0 24px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+  }
+
+  .mobile-drawer.open {
+    display: block;
+  }
+
+  .mobile-nav-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .mobile-nav-link {
+    display: block;
+    padding: 12px 16px;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1rem;
+    border-radius: 8px;
+    min-height: 44px;
+  }
+
+  .mobile-nav-link:hover,
+  .mobile-nav-link.active {
+    background-color: var(--color-bg-surface-elevated);
+    color: #FFFFFF;
+  }
+
+  .mobile-nav-link.highlight {
+    color: var(--color-pink-accent);
+    font-weight: 700;
+  }
+
+  .mobile-nav-link.external {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+  }
+
+  @media (min-width: 860px) {
+    .desktop-nav {
+      display: block;
+    }
+    .mobile-menu-btn {
+      display: none;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .github-text {
+      display: none;
+    }
+    .github-link {
+      padding: 8px;
+    }
+  }
+</style>
+
+<script>
+  const toggleBtn = document.getElementById('mobileMenuToggle');
+  const drawer = document.getElementById('mobileDrawer');
+
+  if (toggleBtn && drawer) {
+    toggleBtn.addEventListener('click', () => {
+      const isOpen = drawer.classList.contains('open');
+      if (isOpen) {
+        drawer.classList.remove('open');
+        drawer.setAttribute('aria-hidden', 'true');
+        toggleBtn.setAttribute('aria-expanded', 'false');
+      } else {
+        drawer.classList.add('open');
+        drawer.setAttribute('aria-hidden', 'false');
+        toggleBtn.setAttribute('aria-expanded', 'true');
+      }
+    });
+
+    // Close on link click
+    drawer.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => {
+        drawer.classList.remove('open');
+        drawer.setAttribute('aria-hidden', 'true');
+        toggleBtn.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
+</script>

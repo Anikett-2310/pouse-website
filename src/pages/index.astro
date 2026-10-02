@@ -1,0 +1,1512 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import TerminalBlock from '../components/TerminalBlock.astro';
+import PlaceholderSlot from '../components/PlaceholderSlot.astro';
+import { RELEASE_CONFIG } from '../config/release';
+---
+
+<BaseLayout
+  title="Pouse — One phone. Multiple ways to control your PC."
+  description="Pouse converts an Android smartphone into a multi-mode wireless input device for Windows 10/11 PCs over local Wi-Fi or Bluetooth."
+>
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container hero-inner">
+      <div class="hero-copy">
+        <div class="hero-badge-group hero-enter-1">
+          <span class="badge badge-brand">Release v{RELEASE_CONFIG.VERSION}</span>
+          <span class="badge badge-windows">Windows 10/11</span>
+          <span class="badge badge-android">Android</span>
+        </div>
+
+        <h1 class="hero-title hero-enter-1">
+          One phone.<br />
+          <span class="gradient-text">Multiple ways to control your PC.</span>
+        </h1>
+
+        <p class="hero-subtitle lead-text hero-enter-2">
+          Pouse turns your Android phone into a wireless trackpad and controller for your Windows PC. Control mouse movement, gestures, and desktop actions over Wi-Fi or Bluetooth — no extra hardware or accounts required.
+        </p>
+
+        <div class="hero-actions hero-enter-3">
+          <a href="/download" class="btn btn-primary btn-lg">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span>Download for Windows</span>
+          </a>
+
+          <a href="/modes" class="btn btn-secondary btn-lg">
+            <span>Explore All 5 Modes</span>
+            <span>→</span>
+          </a>
+        </div>
+
+        <div class="hero-meta hero-enter-3">
+          <span class="meta-item">Windows client ({RELEASE_CONFIG.WINDOWS.SIZE_FORMATTED})</span>
+          <span class="meta-dot">•</span>
+          <span class="meta-item">Direct Android APK</span>
+          <span class="meta-dot">•</span>
+          <span class="meta-item">No extra hardware needed</span>
+        </div>
+      </div>
+
+      <!-- Hero Visual: "Phone controls PC" interactive demonstration -->
+      <div class="hero-visual reveal hero-enter-3">
+        <div class="hero-stage pause-offscreen">
+          <!-- Real phone frame with pointer-reactive tilt (desktop only) -->
+          <div class="hero-phone-wrap hero-phone-tilt" id="heroPhoneTilt">
+            <PlaceholderSlot
+              assetId="hero-phone"
+              label="Live Pouse Mobile App"
+              description="Real screenshot showing Touchpad Mode with speed & scroll adjustments."
+              aspectRatio="9/16"
+              deviceType="phone"
+              lazy={false}
+              fetchPriority="high"
+              showCaption={false}
+            />
+            <!-- Touch indicator demonstrating active interaction on the phone's touchpad surface -->
+            <div class="hero-phone-touch-point" aria-hidden="true">
+              <div class="hero-touch-ripple"></div>
+              <div class="hero-touch-core"></div>
+            </div>
+          </div>
+
+          <!-- Wireless connection bridge stream -->
+          <div class="hero-connection-flow" aria-hidden="true">
+            <div class="connection-line-container">
+              <svg class="connection-svg" viewBox="0 0 80 20" fill="none">
+                <defs>
+                  <linearGradient id="heroLineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#A855F7" stop-opacity="0.3" />
+                    <stop offset="50%" stop-color="#EC4899" stop-opacity="0.9" />
+                    <stop offset="100%" stop-color="#38BDF8" stop-opacity="0.8" />
+                  </linearGradient>
+                </defs>
+                <path d="M 0 10 L 80 10" stroke="rgba(168, 85, 247, 0.2)" stroke-width="2" stroke-dasharray="3 3" />
+                <path d="M 0 10 L 80 10" stroke="url(#heroLineGrad)" stroke-width="2.5" stroke-linecap="round" class="connection-pulse-path" />
+              </svg>
+              <div class="connection-packet-node"></div>
+            </div>
+            <span class="connection-chip">Local Link</span>
+          </div>
+
+          <!-- Recognizable Landscape Windows PC Monitor -->
+          <div class="hero-pc-wrapper" aria-hidden="true">
+            <div class="hero-pc-monitor">
+              <div class="hero-pc-screen">
+                <!-- Windows Titlebar with Windows Logo & native controls -->
+                <div class="hero-pc-header">
+                  <div class="pc-win-branding">
+                    <svg class="pc-win-logo" width="10" height="10" viewBox="0 0 16 16" fill="currentColor">
+                      <rect x="1" y="1" width="6" height="6" fill="#38BDF8" />
+                      <rect x="9" y="1" width="6" height="6" fill="#38BDF8" />
+                      <rect x="1" y="9" width="6" height="6" fill="#38BDF8" />
+                      <rect x="9" y="9" width="6" height="6" fill="#38BDF8" />
+                    </svg>
+                    <span class="pc-title-text">Windows 11 Desktop</span>
+                  </div>
+                  <div class="pc-win-controls">
+                    <span class="win-btn win-min" title="Minimize"></span>
+                    <span class="win-btn win-max" title="Maximize"></span>
+                    <span class="win-btn win-close" title="Close"></span>
+                  </div>
+                </div>
+
+                <!-- Windows Desktop Canvas with Wallpaper, App Target, Taskbar & Windows Pointer -->
+                <div class="hero-pc-canvas">
+                  <div class="pc-app-card">
+                    <div class="pc-app-tab-strip">
+                      <span class="pc-tab is-active">Receiver</span>
+                      <span class="pc-tab">Input</span>
+                    </div>
+                    <div class="pc-app-content">
+                      <div class="pc-target-button" id="pcTargetBtn">
+                        <span class="pc-target-dot"></span>
+                        <span class="pc-target-label">Pouse Click</span>
+                      </div>
+                      <div class="pc-card-bar"></div>
+                    </div>
+                  </div>
+
+                  <!-- Windows 11 Centered Taskbar -->
+                  <div class="pc-taskbar">
+                    <div class="taskbar-icons">
+                      <svg class="taskbar-win-icon" width="10" height="10" viewBox="0 0 16 16" fill="#38BDF8">
+                        <rect x="1" y="1" width="6" height="6" />
+                        <rect x="9" y="1" width="6" height="6" />
+                        <rect x="1" y="9" width="6" height="6" />
+                        <rect x="9" y="9" width="6" height="6" />
+                      </svg>
+                      <span class="taskbar-app pouse-app"></span>
+                      <span class="taskbar-app generic-app"></span>
+                    </div>
+                    <div class="taskbar-tray">
+                      <span class="tray-dot"></span>
+                      <span class="tray-clock">10:24</span>
+                    </div>
+                  </div>
+
+                  <!-- Windows Cursor & Click Pulse -->
+                  <div class="hero-cursor-layer">
+                    <svg class="hero-animated-cursor" viewBox="0 0 16 20" fill="none">
+                      <path d="M1 1L6 18L9 11.5L15 11L1 1Z" fill="#FFFFFF" stroke="#07040B" stroke-width="1.2" stroke-linejoin="round" />
+                    </svg>
+                    <div class="hero-click-pulse"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Monitor Stand -->
+              <div class="hero-pc-stand">
+                <div class="pc-stand-stem"></div>
+                <div class="pc-stand-foot"></div>
+              </div>
+            </div>
+
+            <!-- Sleek Status Pill Anchored Directly Below Monitor -->
+            <div class="hero-status-pill">
+              <span class="status-live-dot" aria-hidden="true"></span>
+              <span class="status-title">Pouse Protocol Active</span>
+              <span class="status-sep">•</span>
+              <span class="status-modes">Direct Wi-Fi / Bluetooth</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Problem Statement & Factual Stats Strip -->
+  <section class="problem-section">
+    <div class="container">
+      <div class="problem-card card reveal">
+        <div class="problem-quote-col">
+          <span class="eyebrow"><span class="eyebrow-index">00</span> The Problem</span>
+          <blockquote class="problem-quote pull-quote">
+            "I need a mouse, but I don't have one with me."
+          </blockquote>
+        </div>
+        <div class="problem-body-col">
+          <p>
+            When you need to control a Windows PC on the go, carrying dedicated peripherals isn't always practical. You always have a smartphone with you.
+          </p>
+          <p>
+            Pouse does not claim to have invented the smartphone-as-mouse concept. Its core differentiator is uniting <strong>five distinct input technologies</strong> — multi-touch surfaces, tilt motion, computer vision hand tracking, gaming input, and remote screen streaming — behind <strong>one shared protocol and a single lightweight Windows client</strong>.
+          </p>
+        </div>
+      </div>
+
+      <!-- Factual Stats Grid (Strictly Documented Facts) -->
+      <div class="stat-counter-grid reveal">
+        <div class="stat-counter-card">
+          <span class="stat-number gradient-text">5</span>
+          <span class="stat-label">Input Modes</span>
+        </div>
+        <div class="stat-counter-card">
+          <span class="stat-number">2</span>
+          <span class="stat-label">Wi-Fi + Bluetooth</span>
+        </div>
+        <div class="stat-counter-card">
+          <span class="stat-number">10/11</span>
+          <span class="stat-label">Windows Supported</span>
+        </div>
+        <div class="stat-counter-card">
+          <span class="stat-number gradient-text">0</span>
+          <span class="stat-label">Accounts / Cloud</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Scroll Storytelling Modes Section -->
+  <section class="modes-section" id="modes">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow"><span class="eyebrow-index">01</span> Input Technology</span>
+        <h2 class="section-title">Five Top-Level Modes</h2>
+        <p class="section-desc">
+          Explore different ways to interact with your PC, adapted to your current environment and task.
+        </p>
+      </div>
+
+      <div class="modes-story-container pause-offscreen">
+        <!-- Scrolling Modes Story Steps -->
+        <div class="modes-story-steps">
+          <!-- Step 0: Touchpad -->
+          <div class="mode-story-step is-active reveal" data-step="0" id="step-touchpad">
+            <span class="display-bg-text" aria-hidden="true">01</span>
+            <div class="step-header">
+              <span class="badge badge-brand">Multi-Touch</span>
+              <h3 class="step-title">Touchpad Mode</h3>
+              <p class="step-tech"><code>GestureDetector (Flutter)</code></p>
+            </div>
+
+            <!-- Mobile phone image (visible on <= 899px) -->
+            <div class="mode-story-phone-mobile">
+              <PlaceholderSlot
+                assetId="touchpad-mode"
+                label="Touchpad Mode"
+                description="85% gesture area + 15% scroll zone"
+                aspectRatio="9/16"
+                deviceType="phone"
+              />
+            </div>
+
+            <p class="step-desc">
+              Precision multi-touch surface featuring an 85% normal movement area and a dedicated 15% right-side scroll zone.
+            </p>
+
+            <ul class="step-inputs">
+              <li>1-finger drag moves the cursor smoothly</li>
+              <li>Single tap = left click; double tap = double click</li>
+              <li>Two-finger tap = right click</li>
+              <li>Hold and drag = drag and drop selection</li>
+              <li>Two-finger swipe = vertical and horizontal scroll</li>
+              <li>Pinch = system zoom and magnification</li>
+            </ul>
+
+            <!-- Micro-animation for Touchpad gestures -->
+            <div class="gesture-anim-badge" aria-label="Touchpad Gesture Animation">
+              <svg width="36" height="36" viewBox="0 0 64 64" fill="none" class="gesture-anim" aria-hidden="true">
+                <rect x="8" y="10" width="48" height="44" rx="6" stroke="rgba(168,85,247,0.3)" stroke-width="1.5" fill="rgba(13,7,21,0.6)" />
+                <circle cx="26" cy="32" r="10" stroke="var(--color-pink-accent)" stroke-width="2" class="gesture-tap-ripple" opacity="0.8" fill="none" />
+                <circle cx="26" cy="32" r="3.5" fill="var(--color-purple-primary)" />
+                <line x1="46" y1="14" x2="46" y2="50" stroke="rgba(236,72,153,0.3)" stroke-width="1" stroke-dasharray="2 2" />
+                <g class="gesture-scroll-arrows">
+                  <path d="M52 24 L55 20 L58 24" stroke="var(--color-pink-accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M52 40 L55 44 L58 40" stroke="var(--color-pink-accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </g>
+              </svg>
+              <span>Tap to click &bull; 2-finger scroll zone &bull; Pinch zoom</span>
+            </div>
+          </div>
+
+          <!-- Step 1: Motion -->
+          <div class="mode-story-step reveal" data-step="1" id="step-motion">
+            <span class="display-bg-text" aria-hidden="true">02</span>
+            <div class="step-header">
+              <span class="badge badge-brand">Inertial Sensors</span>
+              <h3 class="step-title">Motion Mode</h3>
+              <p class="step-tech"><code>Accelerometer + Gyroscope (sensors_plus)</code></p>
+            </div>
+
+            <div class="mode-story-phone-mobile">
+              <PlaceholderSlot
+                assetId="motion-mode"
+                label="Motion Mode"
+                description="In-air gyro steering & trigger"
+                aspectRatio="9/16"
+                deviceType="phone"
+              />
+            </div>
+
+            <p class="step-desc">
+              In-air presentation and steering control. Hold down the center button on your screen and tilt or wave your phone to move the PC cursor.
+            </p>
+
+            <ul class="step-inputs">
+              <li>Hold center trigger button to steer cursor</li>
+              <li>Relative sensor deltas translate to pointer displacement</li>
+              <li>Releasing the button releases cursor control instantly</li>
+            </ul>
+
+            <!-- Micro-animation for Motion tilt -->
+            <div class="gesture-anim-badge" aria-label="Motion Gyro Animation">
+              <svg width="36" height="36" viewBox="0 0 64 64" fill="none" class="gesture-anim" aria-hidden="true">
+                <g class="gesture-gyro-phone">
+                  <rect x="22" y="12" width="20" height="40" rx="4" stroke="var(--color-purple-primary)" stroke-width="1.5" fill="rgba(168,85,247,0.1)" />
+                  <circle cx="32" cy="32" r="4" fill="var(--color-purple-light)" />
+                </g>
+                <path d="M46 22 L40 34 L43 35 L40 40 L43 41 L46 36 L50 36 Z" fill="var(--color-pink-accent)" class="gesture-gyro-cursor" />
+              </svg>
+              <span>Hold trigger button &bull; In-air gyro displacement</span>
+            </div>
+          </div>
+
+          <!-- Step 2: Touchless -->
+          <div class="mode-story-step reveal" data-step="2" id="step-touchless">
+            <span class="display-bg-text" aria-hidden="true">03</span>
+            <div class="step-header">
+              <span class="badge badge-brand">Computer Vision</span>
+              <h3 class="step-title">Touchless Mode</h3>
+              <p class="step-tech"><code>Front Camera + On-Device MediaPipe</code></p>
+            </div>
+
+            <div class="mode-story-phone-mobile">
+              <PlaceholderSlot
+                assetId="touchless-mode"
+                label="Touchless Mode"
+                description="MediaPipe hand tracking camera"
+                aspectRatio="9/16"
+                deviceType="phone"
+              />
+            </div>
+
+            <p class="step-desc">
+              Wave your hand in front of your phone's front camera to steer the cursor without touching the screen. All machine learning inference runs locally on your phone.
+            </p>
+
+            <ul class="step-inputs">
+              <li>Hand landmark detection tracks palm position</li>
+              <li>Move hand across the camera view to navigate</li>
+              <li>Thumb + index finger pinch triggers left click</li>
+              <li>Zero cloud video streaming — 100% on-device vision</li>
+            </ul>
+
+            <!-- Micro-animation for Touchless pinch -->
+            <div class="gesture-anim-badge" aria-label="Touchless Hand Pinch Animation">
+              <svg width="36" height="36" viewBox="0 0 64 64" fill="none" class="gesture-anim" aria-hidden="true">
+                <circle cx="32" cy="32" r="20" stroke="rgba(168,85,247,0.25)" stroke-width="1.5" stroke-dasharray="3 3" />
+                <circle cx="22" cy="32" r="4.5" fill="var(--color-purple-primary)" class="gesture-pinch-left" />
+                <circle cx="42" cy="32" r="4.5" fill="var(--color-pink-accent)" class="gesture-pinch-right" />
+                <circle cx="32" cy="32" r="1.5" fill="#FFFFFF" opacity="0.6" />
+              </svg>
+              <span>Palm steering &bull; Thumb-index pinch click &bull; On-device</span>
+            </div>
+          </div>
+
+          <!-- Step 3: Gaming -->
+          <div class="mode-story-step reveal" data-step="3" id="step-gaming">
+            <span class="display-bg-text" aria-hidden="true">04</span>
+            <div class="step-header">
+              <span class="badge badge-brand">Gamepad</span>
+              <h3 class="step-title">Gaming Mode</h3>
+              <p class="step-tech"><code>Virtual Landscape Gamepad</code></p>
+            </div>
+
+            <div class="mode-story-phone-mobile">
+              <PlaceholderSlot
+                assetId="gaming-mode"
+                label="Gaming Mode"
+                description="Virtual gamepad layout with D-pad & action buttons"
+                aspectRatio="9/16"
+                deviceType="phone"
+              />
+            </div>
+
+            <p class="step-desc">
+              Turn your phone sideways into a virtual gamepad interface designed for casual PC gaming, emulators, and media navigation.
+            </p>
+
+            <ul class="step-inputs">
+              <li>Virtual analog thumbstick with normalized axis input</li>
+              <li>Virtual directional pad (D-pad)</li>
+              <li>On-screen action buttons mapped to standard PC controls</li>
+            </ul>
+
+            <!-- Micro-animation for Gaming stick -->
+            <div class="gesture-anim-badge" aria-label="Gaming Virtual Stick Animation">
+              <svg width="36" height="36" viewBox="0 0 64 64" fill="none" class="gesture-anim" aria-hidden="true">
+                <circle cx="32" cy="32" r="18" stroke="rgba(168,85,247,0.3)" stroke-width="1.5" fill="rgba(13,7,21,0.6)" />
+                <line x1="32" y1="16" x2="32" y2="48" stroke="rgba(168,85,247,0.15)" stroke-width="1" />
+                <line x1="16" y1="32" x2="48" y2="32" stroke="rgba(168,85,247,0.15)" stroke-width="1" />
+                <circle cx="32" cy="32" r="5.5" fill="var(--color-purple-primary)" stroke="var(--color-pink-accent)" stroke-width="1.5" class="gesture-stick-dot" />
+              </svg>
+              <span>Analog stick orbit &bull; 4-button pad &bull; Low latency</span>
+            </div>
+          </div>
+
+          <!-- Step 4: Remote Screen -->
+          <div class="mode-story-step reveal" data-step="4" id="step-remote">
+            <span class="display-bg-text" aria-hidden="true">05</span>
+            <div class="step-header">
+              <span class="badge badge-windows">Wi-Fi Only</span>
+              <h3 class="step-title">Remote Screen Mode</h3>
+              <p class="step-tech"><code>DirectX / WGC + H.264 Hardware Video</code></p>
+            </div>
+
+            <div class="mode-story-phone-mobile">
+              <PlaceholderSlot
+                assetId="remote-screen"
+                label="Remote Screen"
+                description="Live desktop stream up to 60 FPS"
+                aspectRatio="9/16"
+                deviceType="phone"
+              />
+            </div>
+
+            <p class="step-desc">
+              A dedicated top-level mode providing a live display stream of your PC's primary monitor directly on your phone screen, featuring direct touch interaction.
+            </p>
+
+            <ul class="step-inputs">
+              <li>Live display stream of the PC's primary monitor at <strong>up to 60 FPS</strong></li>
+              <li>Direct touch input mapped to absolute PC coordinates</li>
+              <li>Hardware H.264 encode via Windows Media Foundation</li>
+            </ul>
+
+            <div class="mode-limitations" style="margin-top: 12px; font-size: 0.84rem; color: var(--color-text-muted);">
+              <strong>Important constraints:</strong> Wi-Fi connection strictly required (Bluetooth bandwidth is insufficient). Captures primary monitor only. Blocked by Windows Secure Desktop (UAC prompts).
+            </div>
+
+            <!-- Micro-animation for Remote Screen -->
+            <div class="gesture-anim-badge" aria-label="Remote Screen Stream Animation">
+              <svg width="36" height="36" viewBox="0 0 64 64" fill="none" class="gesture-anim" aria-hidden="true">
+                <rect x="12" y="14" width="40" height="28" rx="3" stroke="var(--color-purple-primary)" stroke-width="1.5" fill="rgba(13,7,21,0.8)" />
+                <line x1="26" y1="42" x2="38" y2="42" stroke="var(--color-purple-primary)" stroke-width="1.5" />
+                <line x1="32" y1="42" x2="32" y2="48" stroke="var(--color-purple-primary)" stroke-width="1.5" />
+                <line x1="24" y1="48" x2="40" y2="48" stroke="var(--color-purple-primary)" stroke-width="1.5" />
+                <polygon points="24,22 30,28 27,29 29,33 27,34 25,30 22,32" fill="#FFFFFF" class="gesture-gyro-cursor" />
+                <path d="M40 20 A 4 4 0 0 1 44 24" stroke="#38BDF8" stroke-width="1.5" stroke-linecap="round" fill="none" class="gesture-wifi-wave-1" />
+                <path d="M38 18 A 8 8 0 0 1 46 26" stroke="#38BDF8" stroke-width="1.5" stroke-linecap="round" fill="none" class="gesture-wifi-wave-2" />
+                <path d="M36 16 A 12 12 0 0 1 48 28" stroke="#38BDF8" stroke-width="1.5" stroke-linecap="round" fill="none" class="gesture-wifi-wave-3" />
+              </svg>
+              <span>Up to 60 FPS stream &bull; Absolute coordinates &bull; Wi-Fi only</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sticky Phone Crossfading Frame (Desktop Only) -->
+        <div class="modes-story-sticky" aria-hidden="true">
+          <div class="story-phone-stack">
+            <!-- Layer 0: Touchpad -->
+            <div class="story-phone-layer is-active" data-layer="0">
+              <PlaceholderSlot
+                assetId="touchpad-mode"
+                label="Touchpad Mode"
+                description="85% gesture area + 15% scroll zone"
+                aspectRatio="9/16"
+                deviceType="phone"
+                lazy={false}
+                showCaption={false}
+              />
+            </div>
+            <!-- Layer 1: Motion -->
+            <div class="story-phone-layer" data-layer="1">
+              <PlaceholderSlot
+                assetId="motion-mode"
+                label="Motion Mode"
+                description="In-air gyro steering & trigger"
+                aspectRatio="9/16"
+                deviceType="phone"
+                lazy={true}
+                showCaption={false}
+              />
+            </div>
+            <!-- Layer 2: Touchless -->
+            <div class="story-phone-layer" data-layer="2">
+              <PlaceholderSlot
+                assetId="touchless-mode"
+                label="Touchless Mode"
+                description="MediaPipe hand tracking camera"
+                aspectRatio="9/16"
+                deviceType="phone"
+                lazy={true}
+                showCaption={false}
+              />
+            </div>
+            <!-- Layer 3: Gaming -->
+            <div class="story-phone-layer" data-layer="3">
+              <PlaceholderSlot
+                assetId="gaming-mode"
+                label="Gaming Mode"
+                description="Virtual gamepad layout with D-pad & action buttons"
+                aspectRatio="9/16"
+                deviceType="phone"
+                lazy={true}
+                showCaption={false}
+              />
+            </div>
+            <!-- Layer 4: Remote Screen -->
+            <div class="story-phone-layer" data-layer="4">
+              <PlaceholderSlot
+                assetId="remote-screen"
+                label="Remote Screen"
+                description="Live desktop stream up to 60 FPS"
+                aspectRatio="9/16"
+                deviceType="phone"
+                lazy={true}
+                showCaption={false}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Full-Bleed Gradient Statement Band -->
+  <section class="gradient-statement-band" aria-label="Product Statement">
+    <div class="container">
+      <p class="statement-text">
+        Turn your everyday Android phone into a <span class="gradient-text">precision wireless controller</span> for Windows 10 & 11.
+      </p>
+    </div>
+  </section>
+
+  <!-- Quick Controls Marquee & Utilities Section -->
+  <section class="utilities-section">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow"><span class="eyebrow-index">02</span> Companion Tools</span>
+        <h2 class="section-title">Utilities & Instant Shortcuts</h2>
+        <p class="section-desc">
+          Utility controls live in a collapsible bar at the top of your mobile screen, keeping essential PC actions at your fingertips without switching modes.
+        </p>
+      </div>
+
+      <!-- Horizontal Chip Marquee Strip -->
+      <div class="marquee-container pause-offscreen reveal" aria-label="Windows Utility Shortcuts Marquee">
+        <div class="marquee-track">
+          <div class="control-chip"><span>Volume</span> <code>Vol +/-</code></div>
+          <div class="control-chip"><span>Mute</span> <code>Vol Mute</code></div>
+          <div class="control-chip"><span>Brightness</span> <code>WMI / DDC/CI</code></div>
+          <div class="control-chip"><span>Task View</span> <code>Win+Tab</code></div>
+          <div class="control-chip"><span>Taskbar Apps</span> <code>Win+T</code></div>
+          <div class="control-chip"><span>Show Desktop</span> <code>Win+D</code></div>
+          <div class="control-chip"><span>Windows Search</span> <code>Win+S</code></div>
+          <div class="control-chip"><span>App Switcher</span> <code>Alt+Tab</code></div>
+          <div class="control-chip"><span>Keyboard</span> <code>UTF-8 Direct</code></div>
+          <div class="control-chip"><span>System Zoom</span> <code>Pinch</code></div>
+          <!-- Duplicated for seamless loop -->
+          <div class="control-chip"><span>Volume</span> <code>Vol +/-</code></div>
+          <div class="control-chip"><span>Mute</span> <code>Vol Mute</code></div>
+          <div class="control-chip"><span>Brightness</span> <code>WMI / DDC/CI</code></div>
+          <div class="control-chip"><span>Task View</span> <code>Win+Tab</code></div>
+          <div class="control-chip"><span>Taskbar Apps</span> <code>Win+T</code></div>
+          <div class="control-chip"><span>Show Desktop</span> <code>Win+D</code></div>
+          <div class="control-chip"><span>Windows Search</span> <code>Win+S</code></div>
+          <div class="control-chip"><span>App Switcher</span> <code>Alt+Tab</code></div>
+          <div class="control-chip"><span>Keyboard</span> <code>UTF-8 Direct</code></div>
+          <div class="control-chip"><span>System Zoom</span> <code>Pinch</code></div>
+        </div>
+      </div>
+
+      <!-- 3 Utility Cards -->
+      <div class="utilities-grid stagger-group" style="margin-top: 36px;">
+        <div class="utility-card card reveal">
+          <div class="utility-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+            </svg>
+          </div>
+          <h3 class="utility-title">PC Audio & Brightness</h3>
+          <p class="utility-desc">Directly adjust system parameters from your phone:</p>
+          <ul class="utility-list">
+            <li>Volume Up, Volume Down, Volume Mute</li>
+            <li>Brightness Up (+10%), Brightness Down (-10%) via WMI (laptops) and DDC/CI (monitors)</li>
+          </ul>
+        </div>
+
+        <div class="utility-card card reveal">
+          <div class="utility-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+              <line x1="8" y1="21" x2="16" y2="21"></line>
+              <line x1="12" y1="17" x2="12" y2="21"></line>
+            </svg>
+          </div>
+          <h3 class="utility-title">Windows Navigation Actions</h3>
+          <p class="utility-desc">Trigger standard Windows productivity shortcuts:</p>
+          <ul class="utility-list">
+            <li><strong>Task View</strong>: <kbd class="kbd-chip">Win+Tab</kbd> overview of virtual desktops & windows</li>
+            <li><strong>Taskbar Apps</strong>: <kbd class="kbd-chip">Win+T</kbd> cycles through pinned taskbar apps</li>
+            <li><strong>Show Desktop</strong>: <kbd class="kbd-chip">Win+D</kbd> instant minimize</li>
+            <li><strong>Windows Search</strong>: <kbd class="kbd-chip">Win+S</kbd> query launcher</li>
+            <li><strong>Previous / Next App</strong>: <kbd class="kbd-chip">Alt+Tab</kbd> window switching</li>
+          </ul>
+        </div>
+
+        <div class="utility-card card reveal">
+          <div class="utility-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+              <line x1="6" y1="8" x2="6" y2="8"></line>
+              <line x1="10" y1="8" x2="10" y2="8"></line>
+              <line x1="14" y1="8" x2="14" y2="8"></line>
+              <line x1="18" y1="8" x2="18" y2="8"></line>
+              <line x1="6" y1="12" x2="6" y2="12"></line>
+              <line x1="18" y1="12" x2="18" y2="12"></line>
+              <line x1="7" y1="16" x2="17" y2="16"></line>
+            </svg>
+          </div>
+          <h3 class="utility-title">Soft Keyboard & Pairing</h3>
+          <p class="utility-desc">Quick text entry and connection maintenance:</p>
+          <ul class="utility-list">
+            <li>Type full UTF-8 text strings directly into active PC fields</li>
+            <li>Dedicated keys: <kbd class="kbd-chip">Enter</kbd>, <kbd class="kbd-chip">Backspace</kbd>, <kbd class="kbd-chip">Space</kbd>, <kbd class="kbd-chip">Tab</kbd>, <kbd class="kbd-chip">Esc</kbd></li>
+            <li>Gesture cheatsheet popup for quick gesture reference</li>
+            <li>QR code scanner and manual IP pairing inputs</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="utilities-asset-slot reveal" style="margin-top: 40px; max-width: 320px; margin-left: auto; margin-right: auto;">
+        <PlaceholderSlot
+          assetId="utilities-dock"
+          label="Utility Dock Interface"
+          description="Real screenshot showing the expanded mobile dock controls and shortcuts."
+          aspectRatio="9/16"
+          deviceType="phone"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- Transports & Animated Connection Diagram -->
+  <section class="transports-section content-visibility-auto">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow"><span class="eyebrow-index">03</span> Connectivity</span>
+        <h2 class="section-title">Wi-Fi & Bluetooth Transports</h2>
+        <p class="section-desc">
+          Two independent wireless paths sharing a single, structured protocol.
+        </p>
+      </div>
+
+      <!-- Animated Connection Diagram -->
+      <div class="transport-diagram-wrapper pause-offscreen reveal">
+        <div class="transport-diagram">
+          <!-- Left Node: Phone -->
+          <div class="diagram-node">
+            <div class="diagram-node-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                <line x1="12" y1="18" x2="12.01" y2="18"></line>
+              </svg>
+            </div>
+            <span class="diagram-node-title">Android Phone</span>
+            <span class="diagram-node-sub">Pouse Mobile App</span>
+          </div>
+
+          <!-- Middle: Dual Paths -->
+          <div class="diagram-paths">
+            <!-- Path 1: Wi-Fi -->
+            <div class="diagram-path-card diagram-path-wifi">
+              <div class="diagram-path-header">
+                <span class="diagram-path-name" style="color: var(--color-status-windows);">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
+                    <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
+                    <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+                    <line x1="12" y1="20" x2="12.01" y2="20"></line>
+                  </svg>
+                  Wi-Fi (Local Network)
+                </span>
+                <span class="diagram-path-badge badge badge-windows">Video + Input</span>
+              </div>
+              <p class="diagram-path-desc">
+                High-throughput channel: Remote Screen video stream (up to 60 FPS) + pointer & clicks. 128-bit cryptographic pair token.
+              </p>
+              <div class="diagram-flow-bar">
+                <div class="diagram-flow-pulse diagram-flow-wifi"></div>
+              </div>
+            </div>
+
+            <!-- Path 2: Bluetooth -->
+            <div class="diagram-path-card diagram-path-bt">
+              <div class="diagram-path-header">
+                <span class="diagram-path-name" style="color: var(--color-status-android);">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6.5 6.5 17.5 17.5 12 23 12 1 17.5 6.5 6.5 17.5"></polyline>
+                  </svg>
+                  Bluetooth (Direct RFCOMM)
+                </span>
+                <span class="diagram-path-badge badge badge-android">Controls Only</span>
+              </div>
+              <p class="diagram-path-desc">
+                Zero-network wireless link: Pointer, clicks, gestures, and keyboard. OS pairing + Trust-On-First-Use (TOFU). No video.
+              </p>
+              <div class="diagram-flow-bar">
+                <div class="diagram-flow-pulse diagram-flow-bt"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Node: PC -->
+          <div class="diagram-node">
+            <div class="diagram-node-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+              </svg>
+            </div>
+            <span class="diagram-node-title">Windows PC</span>
+            <span class="diagram-node-sub">Pouse Client (Win 10/11)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detail Cards & Connection QR Slot -->
+      <div class="transports-layout">
+        <div class="transports-grid stagger-group">
+          <div class="transport-card card reveal">
+            <div class="transport-header">
+              <span class="badge badge-windows">Wi-Fi</span>
+              <h3 class="transport-title">Wi-Fi on your local network</h3>
+            </div>
+            <p class="transport-desc">
+              High-throughput connection on your local Wi-Fi network. Required for the Remote Screen video stream and low-latency input.
+            </p>
+            <ul class="transport-features">
+              <li>Pair via QR code scan or manual PC IP entry</li>
+              <li>Same-network presence is strictly transport connectivity, NOT authentication</li>
+              <li>Requires a 128-bit cryptographic pair token generated by the PC</li>
+              <li>Optional secondary Wi-Fi password stored with Windows DPAPI encryption</li>
+            </ul>
+          </div>
+
+          <div class="transport-card card reveal">
+            <div class="transport-header">
+              <span class="badge badge-android">Bluetooth</span>
+              <h3 class="transport-title">Bluetooth</h3>
+            </div>
+            <p class="transport-desc">
+              Zero-network wireless control. Ideal when no Wi-Fi router is available or when working offline on a laptop.
+            </p>
+            <ul class="transport-features">
+              <li>Requires standard OS-level Bluetooth pairing first</li>
+              <li>Application-level Trust-On-First-Use (TOFU) prompt in the Android app</li>
+              <li>Carries pointer, clicks, gestures, and keyboard input</li>
+              <li>Bluetooth is never used for Remote Screen video (bandwidth limitation)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="transports-media reveal">
+          <PlaceholderSlot
+            assetId="connect-qr"
+            label="Connection Selection Flow"
+            description="Real mobile connection modal showing Wi-Fi IP entry, QR scanner, and Bluetooth scan."
+            aspectRatio="9/16"
+            deviceType="phone"
+          />
+        </div>
+      </div>
+
+      <!-- Invariant Callout -->
+      <div class="notice-box notice-box-info reveal">
+        <div class="notice-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          Single Active Transport Invariant
+        </div>
+        <p class="notice-body">
+          Only one transport controls PC input at a time. The Windows client's arbitration engine ensures that if you switch from Wi-Fi to Bluetooth, all held keys and mouse buttons are released first to prevent stuck input. Keep-alive pings never seize input control.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bento Grid Architecture Section (Layout Variety) -->
+  <section class="bento-section" style="padding: 64px 0;">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow"><span class="eyebrow-index">04</span> Engineering</span>
+        <h2 class="section-title">Built for Reliability & Speed</h2>
+        <p class="section-desc">
+          Architecture decisions engineered to deliver native-feeling responsiveness without telemetry or bloat.
+        </p>
+      </div>
+
+      <div class="bento-grid reveal">
+        <!-- Tile 1: 8 cols -->
+        <div class="bento-tile bento-col-8">
+          <span class="display-bg-text" aria-hidden="true">5</span>
+          <div class="bento-header">
+            <span class="badge badge-brand">Unified Architecture</span>
+            <h3 style="font-size: var(--text-card); margin-top: 10px;">One Protocol Across Five Modalities</h3>
+          </div>
+          <p style="color: var(--color-text-secondary); margin: 16px 0; max-width: 540px;">
+            Whether you are drawing with multi-touch, steering via gyroscope deltas, gesturing touchlessly in front of your camera, or using gamepad buttons, every input packet shares a standardized binary-efficient schema parsed by the same native Windows arbitration loop.
+          </p>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <span class="tag">Zero Bloat</span>
+            <span class="tag">Native Windows Input</span>
+            <span class="tag">Direct Win32 API</span>
+          </div>
+        </div>
+
+        <!-- Tile 2: 4 cols -->
+        <div class="bento-tile bento-col-4">
+          <span class="display-bg-text" aria-hidden="true">0</span>
+          <div class="bento-header">
+            <span class="badge badge-android">Security</span>
+            <h3 style="font-size: var(--text-card); margin-top: 10px;">Zero Cloud Reliance</h3>
+          </div>
+          <p style="color: var(--color-text-secondary); margin: 16px 0;">
+            100% of packets stay on your private local network or direct Bluetooth link. No account creation, no external telemetry for CLI, and no third-party servers.
+          </p>
+          <a href="/security" class="animated-link" style="font-size: 0.88rem;">Explore Security Model →</a>
+        </div>
+
+        <!-- Tile 3: 4 cols -->
+        <div class="bento-tile bento-col-4">
+          <div class="bento-header">
+            <span class="badge badge-windows">Video Pipeline</span>
+            <h3 style="font-size: var(--text-card); margin-top: 10px;">Hardware H.264</h3>
+          </div>
+          <p style="color: var(--color-text-secondary); margin: 16px 0;">
+            Primary monitor captured using Windows Graphics Capture (WGC) and hardware-encoded via Windows Media Foundation for smooth streaming up to 60 FPS over local Wi-Fi.
+          </p>
+        </div>
+
+        <!-- Tile 4: 4 cols -->
+        <div class="bento-tile bento-col-4">
+          <div class="bento-header">
+            <span class="badge badge-brand">Computer Vision</span>
+            <h3 style="font-size: var(--text-card); margin-top: 10px;">On-Device MediaPipe</h3>
+          </div>
+          <p style="color: var(--color-text-secondary); margin: 16px 0;">
+            Touchless hand landmark tracking runs entirely on your smartphone's GPU/NPU. Camera frames never leave the phone or get transmitted to the PC.
+          </p>
+        </div>
+
+        <!-- Tile 5: 4 cols -->
+        <div class="bento-tile bento-col-4">
+          <div class="bento-header">
+            <span class="badge badge-windows">Safe Handoff</span>
+            <h3 style="font-size: var(--text-card); margin-top: 10px;">Input Arbitration</h3>
+          </div>
+          <p style="color: var(--color-text-secondary); margin: 16px 0;">
+            Switching between Wi-Fi and Bluetooth automatically triggers a clean key-release sequence to prevent stuck keys or phantom mouse dragging.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLI Teaser Section -->
+  <section class="cli-section">
+    <div class="container">
+      <div class="cli-grid reveal">
+        <div class="cli-copy">
+          <span class="eyebrow"><span class="eyebrow-index">05</span> Developer Tool</span>
+          <h2 class="section-title">Prefer the terminal?</h2>
+          <p class="cli-text lead-text">
+            Install and manage the Pouse Windows client directly using the official <code>pouse-cli</code> tool published on npm. It downloads the official release, verifies its companion SHA-256 checksum automatically, and launches the setup.
+          </p>
+          <div class="cli-links">
+            <a href="/cli" class="btn btn-secondary">
+              Read CLI Documentation →
+            </a>
+          </div>
+        </div>
+
+        <div class="cli-terminal-wrap">
+          <TerminalBlock initialCommand="npm install -g pouse-cli&#10;pouse install" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Download Section with Border Sweep -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-banner download-card-sweep card reveal">
+        <div class="cta-copy">
+          <h2 class="cta-title">Ready to control your PC?</h2>
+          <p class="cta-desc">
+            Download the official Windows installer and pair your Android phone in seconds.
+          </p>
+        </div>
+        <div class="cta-buttons">
+          <a href="/download" class="btn btn-primary btn-lg">
+            Download Pouse v{RELEASE_CONFIG.VERSION}
+          </a>
+          <a href={RELEASE_CONFIG.GITHUB_REPO} target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-lg">
+            Source code on GitHub ↗
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script is:inline>
+  (function() {
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // 1. Hero Pointer Tilt (Desktop Only)
+    if (window.matchMedia('(hover: hover) and (pointer: fine)').matches && !prefersReduced) {
+      const heroStage = document.querySelector('.hero-stage');
+      const phoneTilt = document.getElementById('heroPhoneTilt');
+      if (heroStage && phoneTilt) {
+        let targetX = 0, targetY = 0, currentX = 0, currentY = 0, reqId = null;
+
+        function updateTilt() {
+          currentX += (targetX - currentX) * 0.12;
+          currentY += (targetY - currentY) * 0.12;
+          phoneTilt.style.transform = 'perspective(900px) rotateX(' + currentX.toFixed(2) + 'deg) rotateY(' + currentY.toFixed(2) + 'deg)';
+          if (Math.abs(targetX - currentX) > 0.05 || Math.abs(targetY - currentY) > 0.05) {
+            reqId = requestAnimationFrame(updateTilt);
+          } else {
+            reqId = null;
+          }
+        }
+
+        heroStage.addEventListener('pointermove', function(e) {
+          const rect = heroStage.getBoundingClientRect();
+          const x = (e.clientX - rect.left) / rect.width - 0.5;
+          const y = (e.clientY - rect.top) / rect.height - 0.5;
+          targetX = -y * 12; // max ~6-7 deg
+          targetY = x * 12;
+          if (!reqId) reqId = requestAnimationFrame(updateTilt);
+        }, { passive: true });
+
+        heroStage.addEventListener('pointerleave', function() {
+          targetX = 0;
+          targetY = 0;
+          if (!reqId) reqId = requestAnimationFrame(updateTilt);
+        });
+      }
+    }
+
+    // 2. Scroll Storytelling Modes Crossfade (Desktop)
+    if ('IntersectionObserver' in window && !prefersReduced) {
+      const steps = document.querySelectorAll('.mode-story-step');
+      const layers = document.querySelectorAll('.story-phone-layer');
+
+      if (steps.length > 0 && layers.length > 0) {
+        const stepObserver = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              const stepIdx = entry.target.getAttribute('data-step');
+              steps.forEach(function(s) {
+                if (s.getAttribute('data-step') === stepIdx) s.classList.add('is-active');
+                else s.classList.remove('is-active');
+              });
+              layers.forEach(function(l) {
+                if (l.getAttribute('data-layer') === stepIdx) l.classList.add('is-active');
+                else l.classList.remove('is-active');
+              });
+            }
+          });
+        }, { threshold: 0.5, rootMargin: '-10% 0px -20% 0px' });
+
+        steps.forEach(function(step) {
+          stepObserver.observe(step);
+        });
+      }
+    }
+  })();
+</script>
+
+<style>
+  /* Hero Styles */
+  .hero-section {
+    padding: 64px 0 48px;
+    position: relative;
+  }
+
+  .hero-inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+
+  @media (min-width: 960px) {
+    .hero-inner {
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      padding-top: 20px;
+    }
+  }
+
+  .hero-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .hero-badge-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .hero-title {
+    font-size: clamp(2.35rem, 3.6vw + 0.4rem, 3.4rem);
+    line-height: 1.1;
+    letter-spacing: -0.035em;
+    max-width: 540px;
+  }
+
+  .hero-subtitle {
+    font-size: var(--text-lead);
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    max-width: 520px;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 8px;
+  }
+
+  @media (max-width: 480px) {
+    .hero-actions .btn {
+      width: 100%;
+    }
+  }
+
+  .btn-lg {
+    min-height: 48px;
+    padding: 12px 26px;
+    font-size: 1rem;
+  }
+
+  .hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin-top: 6px;
+  }
+
+  .meta-dot {
+    color: var(--color-border-medium);
+  }
+
+  .hero-visual {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+  }
+
+  .hero-stage {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    width: 100%;
+  }
+
+  .hero-phone-wrap {
+    position: relative;
+    width: clamp(160px, 15vw, 185px);
+    aspect-ratio: 738 / 1424;
+    transition: transform 0.1s ease-out;
+    transform-style: preserve-3d;
+    flex-shrink: 0;
+  }
+
+  .hero-connection-flow {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    width: clamp(38px, 4vw, 52px);
+    flex-shrink: 0;
+  }
+
+  .connection-line-container {
+    position: relative;
+    width: 100%;
+    height: 20px;
+    display: flex;
+    align-items: center;
+  }
+
+  .connection-svg {
+    width: 100%;
+    height: 20px;
+    overflow: visible;
+  }
+
+  .connection-chip {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-purple-light);
+    background: rgba(168, 85, 247, 0.12);
+    border: 1px solid var(--color-border-subtle);
+    padding: 2px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  .hero-pc-wrapper {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+    width: clamp(210px, 20vw, 246px);
+  }
+
+  @media (min-width: 640px) {
+    .hero-connection-flow,
+    .hero-pc-wrapper {
+      display: flex;
+    }
+  }
+
+  .hero-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: rgba(22, 13, 37, 0.9);
+    border: 1px solid rgba(168, 85, 247, 0.25);
+    box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.6);
+    margin-top: 10px;
+  }
+
+  .status-live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--color-status-android);
+    box-shadow: 0 0 8px var(--color-status-android);
+    flex-shrink: 0;
+  }
+
+  .status-title {
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    line-height: 1;
+  }
+
+  .status-sep {
+    color: var(--color-border-medium);
+    font-size: 0.7rem;
+  }
+
+  .status-modes {
+    font-size: 0.68rem;
+    color: var(--color-text-muted);
+    line-height: 1;
+  }
+
+  /* Problem Section */
+  .problem-section {
+    padding: 40px 0;
+  }
+
+  .problem-card {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    background-color: var(--color-bg-surface-elevated);
+    border-color: var(--color-border-medium);
+  }
+
+  @media (min-width: 768px) {
+    .problem-card {
+      grid-template-columns: 1fr 1.6fr;
+      gap: 36px;
+      padding: 36px;
+    }
+  }
+
+  .problem-quote-col {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .problem-quote {
+    font-size: clamp(1.4rem, 2.2vw, 1.85rem);
+    font-weight: 800;
+    color: var(--color-text-primary);
+    line-height: 1.35;
+    font-style: normal;
+  }
+
+  .problem-body-col {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    font-size: 0.96rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+  }
+
+  /* Modes Section */
+  .modes-section {
+    padding: 64px 0;
+  }
+
+  .section-header {
+    text-align: center;
+    max-width: 680px;
+    margin: 0 auto 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-title {
+    font-size: var(--text-section);
+  }
+
+  .section-desc {
+    font-size: var(--text-lead);
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+  }
+
+  .step-header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .step-title {
+    font-size: var(--text-card);
+  }
+
+  .step-tech code {
+    font-size: 0.8rem;
+    color: var(--color-purple-light);
+  }
+
+  .step-desc {
+    font-size: 0.95rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+
+  .step-inputs {
+    list-style: disc;
+    padding-left: 20px;
+    font-size: 0.88rem;
+    color: var(--color-text-muted);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  /* Utilities Section */
+  .utilities-section {
+    padding: 48px 0;
+    background-color: rgba(13, 7, 21, 0.4);
+    border-top: 1px solid var(--color-border-subtle);
+    border-bottom: 1px solid var(--color-border-subtle);
+  }
+
+  .utilities-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  @media (min-width: 768px) {
+    .utilities-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .utility-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .utility-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: var(--color-bg-canvas);
+    border: 1px solid var(--color-border-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-purple-primary);
+  }
+
+  .utility-title {
+    font-size: 1.15rem;
+    margin: 0;
+  }
+
+  .utility-desc {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+
+  .utility-list {
+    list-style: disc;
+    padding-left: 20px;
+    font-size: 0.88rem;
+    color: var(--color-text-muted);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 4px;
+  }
+
+  /* Transports Section */
+  .transports-section {
+    padding: 64px 0;
+  }
+
+  .transports-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    align-items: center;
+    margin-bottom: 32px;
+  }
+
+  @media (min-width: 960px) {
+    .transports-layout {
+      grid-template-columns: 1.35fr 1fr;
+      gap: 48px;
+    }
+  }
+
+  .transports-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  @media (min-width: 640px) and (max-width: 959px) {
+    .transports-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .transports-media {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .transport-card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .transport-header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .transport-title {
+    font-size: 1.25rem;
+    margin: 0;
+  }
+
+  .transport-desc {
+    font-size: 0.92rem;
+    color: var(--color-text-secondary);
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  .transport-features {
+    list-style: disc;
+    padding-left: 20px;
+    font-size: 0.88rem;
+    color: var(--color-text-muted);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  /* CLI Section */
+  .cli-section {
+    padding: 48px 0 64px;
+  }
+
+  .cli-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    align-items: center;
+    min-width: 0;
+  }
+
+  .cli-grid > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  @media (min-width: 860px) {
+    .cli-grid {
+      grid-template-columns: 1fr 1.2fr;
+      gap: 48px;
+    }
+  }
+
+  .cli-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .cli-text {
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+  }
+
+  /* CTA Section */
+  .cta-section {
+    padding: 40px 0 80px;
+  }
+
+  .cta-banner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 24px;
+    padding: 48px 24px;
+    border-color: var(--color-border-medium);
+  }
+
+  @media (min-width: 768px) {
+    .cta-banner {
+      flex-direction: row;
+      justify-content: space-between;
+      text-align: left;
+      padding: 48px 48px;
+    }
+  }
+
+  .cta-copy {
+    max-width: 520px;
+  }
+
+  .cta-title {
+    font-size: 1.85rem;
+    margin-bottom: 8px;
+  }
+
+  .cta-desc {
+    font-size: 1rem;
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+
+  .cta-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  @media (max-width: 480px) {
+    .cta-buttons .btn {
+      width: 100%;
+    }
+  }
+</style>

@@ -1,0 +1,176 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { RELEASE_CONFIG } from '../config/release';
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+}
+
+const {
+  title = `${RELEASE_CONFIG.APP_NAME} — ${RELEASE_CONFIG.TAGLINE}`,
+  description = RELEASE_CONFIG.SUBTITLE,
+  ogImage = '/og-image.png',
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, RELEASE_CONFIG.CANONICAL_URL);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <script is:inline>document.documentElement.classList.add('js');</script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#07040B" />
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Favicons & Icons -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+
+    <!-- Open Graph / Social Cards -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(ogImage, RELEASE_CONFIG.CANONICAL_URL)} />
+    <meta property="og:site_name" content="Pouse" />
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonicalURL} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(ogImage, RELEASE_CONFIG.CANONICAL_URL)} />
+
+    <!-- Self-Hosted Fonts Preload -->
+    <link rel="preload" href="/fonts/space-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+    <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+
+    <title>{title}</title>
+  </head>
+  <body>
+    <Header />
+    <main id="main-content">
+      <slot />
+    </main>
+    <Footer />
+
+    <script is:inline>
+      (function() {
+        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        
+        // 1. Reveal Animations with IntersectionObserver (unobserves immediately after first reveal)
+        const reveals = document.querySelectorAll('.reveal');
+        if (prefersReduced) {
+          reveals.forEach(function(el) { el.classList.add('is-revealed'); });
+        } else if ('IntersectionObserver' in window) {
+          const revealObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('is-revealed');
+                revealObserver.unobserve(entry.target);
+              }
+            });
+          }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
+          reveals.forEach(function(el) { revealObserver.observe(el); });
+        } else {
+          reveals.forEach(function(el) { el.classList.add('is-revealed'); });
+        }
+
+        // 2. Video IntersectionObserver: Play only when visible, pause when offscreen
+        if ('IntersectionObserver' in window && !prefersReduced) {
+          const videoObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+              const video = entry.target;
+              if (entry.isIntersecting) {
+                video.play().catch(function() {});
+              } else {
+                video.pause();
+              }
+            });
+          }, { threshold: 0.25 });
+          document.querySelectorAll('video[data-auto-play-visible="true"]').forEach(function(v) {
+            videoObserver.observe(v);
+          });
+        }
+
+        // 3. Pause Infinite Animations when off-screen
+        if ('IntersectionObserver' in window && !prefersReduced) {
+          const animObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+              const target = entry.target;
+              if (entry.isIntersecting) {
+                target.style.animationPlayState = 'running';
+                target.querySelectorAll && target.querySelectorAll('.anim-loop, .marquee-track, .hero-animated-cursor, .connection-pulse-path').forEach(function(child) {
+                  child.style.animationPlayState = 'running';
+                });
+              } else {
+                target.style.animationPlayState = 'paused';
+                target.querySelectorAll && target.querySelectorAll('.anim-loop, .marquee-track, .hero-animated-cursor, .connection-pulse-path').forEach(function(child) {
+                  child.style.animationPlayState = 'paused';
+                });
+              }
+            });
+          }, { threshold: 0.05 });
+
+          document.querySelectorAll('.pause-offscreen, .hero-stage, .marquee-container, .modes-story-container, .transport-diagram-wrapper').forEach(function(el) {
+            animObserver.observe(el);
+          });
+        }
+
+        // 4. Header Scroll state & Fallback Scroll Progress (Zero DOM Layout Thrashing)
+        const header = document.getElementById('siteHeader');
+        const progressBar = document.getElementById('scrollProgressBar');
+        const supportsScrollTimeline = CSS.supports && CSS.supports('animation-timeline', 'scroll()');
+
+        let docHeight = 0;
+        function updateDocHeight() {
+          docHeight = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+        }
+        window.addEventListener('resize', updateDocHeight, { passive: true });
+        updateDocHeight();
+
+        let ticking = false;
+        let isScrolled = false;
+
+        function onScroll() {
+          const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+          const shouldBeScrolled = scrollY > 20;
+
+          if (header && isScrolled !== shouldBeScrolled) {
+            isScrolled = shouldBeScrolled;
+            if (isScrolled) header.classList.add('scrolled');
+            else header.classList.remove('scrolled');
+          }
+
+          if (!supportsScrollTimeline && progressBar && docHeight > 0) {
+            const progress = Math.min(1, Math.max(0, scrollY / docHeight));
+            progressBar.style.transform = 'scaleX(' + progress + ')';
+          }
+          ticking = false;
+        }
+
+        window.addEventListener('scroll', function() {
+          if (!ticking) {
+            requestAnimationFrame(onScroll);
+            ticking = true;
+          }
+        }, { passive: true });
+        onScroll();
+
+        // 5. Tab visibility pause
+        document.addEventListener('visibilitychange', function() {
+          document.body.classList.toggle('page-hidden', document.hidden);
+        });
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,210 @@
+---
+import { RELEASE_CONFIG } from '../config/release';
+---
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div class="footer-grid">
+      <!-- Col 1: Brand & Truth -->
+      <div class="footer-col brand-col">
+        <div class="brand-row">
+          <img src="/assets/pouse-logo.png" alt="Pouse icon" width="32" height="32" class="footer-logo" />
+          <span class="brand-name">Pouse</span>
+          <span class="badge badge-brand">v{RELEASE_CONFIG.VERSION}</span>
+        </div>
+        <p class="brand-desc">
+          Pocket Mouse platform converting an Android phone into a multi-mode wireless input device for Windows 10/11.
+        </p>
+        <p class="telemetry-notice">
+          This website and the CLI collect zero telemetry and run no tracking scripts.
+        </p>
+      </div>
+
+      <!-- Col 2: Navigation -->
+      <div class="footer-col">
+        <h4 class="col-title">Product</h4>
+        <ul class="footer-links">
+          <li><a href="/modes">All 5 Input Modes</a></li>
+          <li><a href="/how-it-works">How It Works</a></li>
+          <li><a href="/security">Security & Privacy</a></li>
+          <li><a href="/cli">CLI Tool (pouse-cli)</a></li>
+          <li><a href="/faq">Frequently Asked Questions</a></li>
+        </ul>
+      </div>
+
+      <!-- Col 3: Downloads -->
+      <div class="footer-col">
+        <h4 class="col-title">Downloads</h4>
+        <ul class="footer-links">
+          <li><a href="/download">Download Center</a></li>
+          <li><a href="/download/windows">Windows Desktop Client</a></li>
+          <li><a href="/download/android">Android Mobile App</a></li>
+          <li>
+            <a href={RELEASE_CONFIG.GITHUB_RELEASE_URL} target="_blank" rel="noopener noreferrer">
+              GitHub Release v{RELEASE_CONFIG.VERSION} ↗
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Col 4: Repository & Legal -->
+      <div class="footer-col">
+        <h4 class="col-title">Repository</h4>
+        <ul class="footer-links">
+          <li>
+            <a href={RELEASE_CONFIG.GITHUB_REPO} target="_blank" rel="noopener noreferrer">
+              Source code on GitHub ↗
+            </a>
+          </li>
+          <li>
+            <a href={`${RELEASE_CONFIG.GITHUB_REPO}/issues`} target="_blank" rel="noopener noreferrer">
+              Issue Tracker ↗
+            </a>
+          </li>
+          <li><a href="/privacy">Privacy Policy</a></li>
+          <li><span class="text-faint">License: TBD</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="bottom-left">
+        <p>© {new Date().getFullYear()} Pouse. Windows is a trademark of Microsoft Corporation. Android is a trademark of Google LLC.</p>
+      </div>
+      <div class="bottom-right">
+        <a href={RELEASE_CONFIG.GITHUB_REPO} target="_blank" rel="noopener noreferrer" class="footer-github-link">
+          Anikett-2310/Pouse
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: auto;
+    background-color: var(--color-bg-surface);
+    border-top: 1px solid var(--color-border-subtle);
+    padding: 64px 0 32px;
+  }
+
+  .footer-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+
+  @media (min-width: 640px) {
+    .footer-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 960px) {
+    .footer-grid {
+      grid-template-columns: 2fr 1fr 1fr 1.2fr;
+    }
+  }
+
+  .brand-col {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .brand-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .footer-logo {
+    border-radius: 8px;
+  }
+
+  .brand-name {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--color-text-primary);
+  }
+
+  .brand-desc {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    max-width: 360px;
+    line-height: 1.5;
+  }
+
+  .telemetry-notice {
+    font-size: 0.82rem;
+    color: var(--color-text-muted);
+    line-height: 1.45;
+  }
+
+  .col-title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-primary);
+    margin-bottom: 16px;
+  }
+
+  .footer-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .footer-links a {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.15s ease;
+  }
+
+  .footer-links a:hover {
+    color: #FFFFFF;
+    text-decoration: underline;
+  }
+
+  .text-faint {
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+  }
+
+  .footer-bottom {
+    padding-top: 24px;
+    border-top: 1px solid var(--color-border-subtle);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    font-size: 0.82rem;
+    color: var(--color-text-muted);
+  }
+
+  @media (min-width: 768px) {
+    .footer-bottom {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+
+  .footer-github-link {
+    color: var(--color-purple-light);
+    text-decoration: none;
+  }
+
+  .footer-github-link:hover {
+    color: #FFFFFF;
+    text-decoration: underline;
+  }
+</style>

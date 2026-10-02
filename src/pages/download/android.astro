@@ -1,0 +1,301 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PlaceholderSlot from '../../components/PlaceholderSlot.astro';
+import { RELEASE_CONFIG } from '../../config/release';
+
+const hasAndroidUrl = Boolean(RELEASE_CONFIG.ANDROID.ANDROID_APK_URL);
+---
+
+<BaseLayout
+  title="Android Setup Guide — Pouse Mobile App"
+  description="Installation guide, direct APK download, permissions breakdown, and pairing instructions for the Pouse Android companion app."
+>
+  <div class="subpage-wrap">
+    <div class="container-narrow">
+      <div class="subpage-header">
+        <div class="breadcrumb">
+          <a href="/download">Downloads</a>
+          <span>/</span>
+          <span>Android</span>
+        </div>
+        <span class="badge badge-android">Mobile App</span>
+        <h1 class="page-title">Android Installation & Setup</h1>
+        <p class="page-subtitle">
+          Direct APK download, sideloading instructions, required permissions, and connection pairing for Android phones.
+        </p>
+      </div>
+
+      <!-- Quick Download Banner -->
+      <div class="quick-download-banner card card-elevated">
+        <div class="banner-info">
+          <h2 class="banner-title">{RELEASE_CONFIG.ANDROID.FILENAME}</h2>
+          <span class="banner-meta">Package: <code>{RELEASE_CONFIG.ANDROID.APP_ID}</code> • Direct APK • Not on Google Play</span>
+        </div>
+        {hasAndroidUrl ? (
+          <a href={RELEASE_CONFIG.ANDROID.ANDROID_APK_URL} class="btn btn-primary btn-lg">
+            Download APK
+          </a>
+        ) : (
+          <button type="button" class="btn btn-secondary btn-lg btn-disabled" aria-disabled="true">
+            Coming soon / link pending
+          </button>
+        )}
+      </div>
+
+      <!-- Sideloading Instructions -->
+      <div class="content-section">
+        <h2 class="section-title">How to Install the APK</h2>
+        <p>
+          Because Pouse is distributed directly as an APK outside the Google Play Store, your browser will prompt a security confirmation when downloading:
+        </p>
+
+        <ol class="steps-list">
+          <li class="step-item">
+            <h3 class="step-title">1. Download Confirmation</h3>
+            <p class="step-desc">
+              When downloading the file, your mobile browser (such as Chrome) may display <em>"File might be harmful. Do you want to download app-release.apk anyway?"</em>. Tap <strong>"Download anyway"</strong>.
+            </p>
+          </li>
+
+          <li class="step-item">
+            <h3 class="step-title">2. Allow Unknown Apps Permission</h3>
+            <p class="step-desc">
+              Tap the downloaded file from your notification shade or Downloads folder. If prompted that your browser is not allowed to install unknown apps, tap <strong>Settings</strong>, enable <strong>"Allow from this source"</strong>, and return to complete the installation.
+            </p>
+          </li>
+
+          <li class="step-item">
+            <h3 class="step-title">3. Play Protect Prompt</h3>
+            <p class="step-desc">
+              Google Play Protect may ask to scan the newly installed APK. The build is production-signed with the official release key.
+            </p>
+          </li>
+        </ol>
+      </div>
+
+      <!-- Permissions Explanation -->
+      <div class="content-section reveal">
+        <h2 class="section-title">Android Permissions & Purpose</h2>
+        <p>
+          Pouse requests only the permissions necessary to operate wireless transports and hardware sensors:
+        </p>
+
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Permission</th>
+                <th>Reason Required</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>CAMERA</code></td>
+                <td>
+                  1. Scanning the desktop pairing QR code on initial Wi-Fi setup.<br />
+                  2. Powering Touchless mode (on-device MediaPipe hand landmark detection). Camera frames are processed on the phone and are not sent to the PC.
+                </td>
+              </tr>
+              <tr>
+                <td><code>BLUETOOTH_CONNECT</code> &amp; <code>SCAN</code></td>
+                <td>
+                  Allows the app to scan for the PC's Bluetooth LE advertisement beacon and establish the Classic RFCOMM socket connection.
+                </td>
+              </tr>
+              <tr>
+                <td><code>ACCESS_FINE_LOCATION</code></td>
+                <td>
+                  Required by the Android operating system to scan for Bluetooth Low Energy (BLE) beacons. Pouse does not track, log, or transmit GPS location.
+                </td>
+              </tr>
+              <tr>
+                <td><code>INTERNET</code> &amp; <code>ACCESS_NETWORK_STATE</code></td>
+                <td>
+                  Opens local WebSocket sockets to your PC's IP on port 8081 over your local Wi-Fi router.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Pairing Instructions -->
+      <div class="content-section reveal">
+        <h2 class="section-title">Connecting to Your Windows PC</h2>
+        <div class="pairing-methods-grid">
+          <div class="card pairing-card">
+            <h3 class="pairing-title">Method A: Wi-Fi (QR Code)</h3>
+            <p class="pairing-desc">
+              Ensure both devices are on the same Wi-Fi network. Right-click the Pouse system tray icon on your PC and select <strong>"Show IP & QR Code"</strong>. In the mobile app, tap the QR icon and scan the screen. The cryptographic pair token will be exchanged automatically.
+            </p>
+          </div>
+
+          <div class="card pairing-card">
+            <h3 class="pairing-title">Method B: Bluetooth (Offline)</h3>
+            <p class="pairing-desc">
+              Pair your Android phone with Windows via standard Windows Bluetooth Settings first. Open Pouse on both devices. On Android, tap the Bluetooth tab. When connecting for the first time, accept the <strong>Trust-On-First-Use (TOFU)</strong> dialog to authorize input.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Connection Steps Live Interface -->
+      <div class="content-section content-visibility-auto reveal">
+        <h2 class="section-title" style="text-align: center; margin-bottom: 24px;">Live Mobile Pairing Screens</h2>
+        <div class="snap-gallery">
+          <PlaceholderSlot
+            assetId="connect-qr"
+            label="QR Code &amp; IP Pairing Flow"
+            description="Android connection modal with Wi-Fi IP entry and camera scanner."
+            aspectRatio="9/16"
+            deviceType="phone"
+          />
+          <PlaceholderSlot
+            assetId="bluetooth-discovery"
+            label="Bluetooth Trust Dialog"
+            description="Android Trust-On-First-Use (TOFU) authorization prompt with device details."
+            aspectRatio="9/16"
+            deviceType="phone"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .subpage-wrap {
+    padding: 48px 0 96px;
+  }
+
+  .subpage-header {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 36px;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.88rem;
+    color: var(--color-text-muted);
+  }
+
+  .breadcrumb a {
+    color: var(--color-purple-light);
+    text-decoration: none;
+  }
+
+  .page-title {
+    font-size: var(--text-title);
+  }
+
+  .page-subtitle {
+    font-size: var(--text-lead);
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+  }
+
+  .quick-download-banner {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 28px 32px;
+    margin-bottom: 40px;
+    background: linear-gradient(135deg, rgba(13, 7, 21, 0.9) 0%, rgba(22, 13, 37, 0.9) 100%);
+    border-color: var(--color-border-medium);
+  }
+
+  @media (min-width: 680px) {
+    .quick-download-banner {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+
+  .banner-title {
+    font-size: 1.3rem;
+    margin-bottom: 6px;
+  }
+
+  .banner-meta {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+  }
+
+  .banner-meta code {
+    color: var(--color-purple-light);
+  }
+
+  .content-section {
+    margin-bottom: 48px;
+  }
+
+  .section-title {
+    font-size: var(--text-section);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--color-border-subtle);
+  }
+
+  .steps-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-top: 16px;
+  }
+
+  .step-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .step-title {
+    font-size: var(--text-card);
+    color: var(--color-text-primary);
+  }
+
+  .step-desc {
+    font-size: 0.92rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .pairing-methods-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    margin-top: 16px;
+  }
+
+  @media (min-width: 680px) {
+    .pairing-methods-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .pairing-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .pairing-title {
+    font-size: 1.1rem;
+    margin: 0;
+    color: var(--color-text-primary);
+  }
+
+  .pairing-desc {
+    font-size: 0.88rem;
+    color: var(--color-text-secondary);
+    line-height: 1.55;
+    margin: 0;
+  }
+</style>

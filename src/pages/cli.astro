@@ -1,0 +1,307 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import TerminalBlock from '../components/TerminalBlock.astro';
+import { RELEASE_CONFIG } from '../config/release';
+---
+
+<BaseLayout
+  title="Pouse CLI Documentation — Terminal Distribution Tool"
+  description="Command reference and installation guide for pouse-cli: install, update, and manage the Pouse Windows client from your terminal."
+>
+  <div class="cli-page">
+    <div class="container-narrow">
+      <div class="page-header">
+        <span class="badge badge-brand">Developer Tool</span>
+        <h1 class="page-title">Pouse CLI</h1>
+        <p class="page-subtitle">
+          The official command-line tool for installing, verifying, updating, and removing the Pouse Windows desktop client.
+        </p>
+      </div>
+
+      <!-- Quick Installation Box -->
+      <div class="cli-install-box card card-elevated">
+        <div class="install-header">
+          <span class="badge badge-windows">Windows 10 / 11 Only</span>
+          <span class="badge badge-brand">npm package: {RELEASE_CONFIG.CLI.PACKAGE_NAME}</span>
+        </div>
+        <h2 class="install-title">Quick Installation</h2>
+        <p class="install-desc">
+          Install globally using npm (requires <strong>Node.js &gt;= 22.0.0</strong>):
+        </p>
+        <div class="code-terminal">
+          <code>npm install -g {RELEASE_CONFIG.CLI.PACKAGE_NAME}</code>
+        </div>
+        <p class="npx-note">
+          You can also run the installer directly without prior installation using: <code>npx pouse-cli install</code>
+        </p>
+      </div>
+
+      <!-- Interactive Terminal Sandbox -->
+      <div class="content-section reveal">
+        <h2 class="section-title">Command Playground</h2>
+        <TerminalBlock />
+      </div>
+
+      <!-- Commands Reference -->
+      <div class="content-section reveal">
+        <h2 class="section-title">Command Reference</h2>
+        
+        <div class="commands-list stagger-group">
+          <div class="command-card card reveal">
+            <div class="command-heading">
+              <code>pouse install [options]</code>
+            </div>
+            <p class="command-desc">
+              Discovers the latest official release from GitHub Releases, downloads <code>{RELEASE_CONFIG.WINDOWS.FILENAME}</code>, verifies its companion SHA-256 checksum asset, and executes the installer.
+            </p>
+            <div class="command-examples">
+              <span class="example-label">Examples:</span>
+              <pre><code>pouse install
+pouse install --release v1.0.0
+pouse install --silent</code></pre>
+            </div>
+          </div>
+
+          <div class="command-card card reveal">
+            <div class="command-heading">
+              <code>pouse update [options]</code>
+            </div>
+            <p class="command-desc">
+              Checks the currently installed version in your local user directory against the latest GitHub release, and performs an in-place update if a newer version exists.
+            </p>
+            <div class="command-examples">
+              <span class="example-label">Examples:</span>
+              <pre><code>pouse update
+pouse update --silent</code></pre>
+            </div>
+          </div>
+
+          <div class="command-card card reveal">
+            <div class="command-heading">
+              <code>pouse uninstall [options]</code>
+            </div>
+            <p class="command-desc">
+              Locates the Inno Setup uninstaller registered in the Windows registry (<code>AppData\Local\Programs\Pouse</code>) and cleanly removes the client and firewall rules.
+            </p>
+            <div class="command-examples">
+              <span class="example-label">Examples:</span>
+              <pre><code>pouse uninstall
+pouse uninstall --silent</code></pre>
+            </div>
+          </div>
+
+          <div class="command-card card reveal">
+            <div class="command-heading">
+              <code>pouse --version (-v)</code>
+            </div>
+            <p class="command-desc">
+              Displays the CLI package version, Node.js runtime version, and the installed Pouse desktop client version.
+            </p>
+          </div>
+
+          <div class="command-card card reveal">
+            <div class="command-heading">
+              <code>pouse --help (-h)</code>
+            </div>
+            <p class="command-desc">
+              Prints the full CLI usage options, flags, and platform targets.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Options & Flags Table -->
+      <div class="content-section reveal">
+        <h2 class="section-title">Command Options &amp; Flags</h2>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Option</th>
+                <th>Shorthand</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>--silent</code></td>
+                <td><code>-s</code></td>
+                <td>Runs unattended in silent mode without interactive prompts or GUI installer dialogs.</td>
+              </tr>
+              <tr>
+                <td><code>--verbose</code></td>
+                <td>—</td>
+                <td>Enables diagnostic and detailed network output logs.</td>
+              </tr>
+              <tr>
+                <td><code>--release &lt;ver&gt;</code></td>
+                <td><code>-r</code></td>
+                <td>Targets a specific GitHub release tag (e.g. <code>v1.0.0</code>). Defaults to latest.</td>
+              </tr>
+              <tr>
+                <td><code>--force</code></td>
+                <td><code>-f</code></td>
+                <td>Forces re-installation even if the current version matches, and terminates running instances.</td>
+              </tr>
+              <tr>
+                <td><code>--unsafe-no-checksum</code></td>
+                <td>—</td>
+                <td>
+                  <strong style="color: var(--color-status-warning);">[UNSAFE — FOR TESTING ONLY]</strong> Developer escape hatch that overrides mandatory companion SHA-256 checksum verification. This is strictly for internal testing and is not part of the standard installation flow.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Integrity & Telemetry Notice -->
+      <div class="content-section">
+        <div class="notice-box notice-box-info">
+          <div class="notice-title">Integrity &amp; Zero-Telemetry Policy</div>
+          <div class="notice-body">
+            <code>pouse-cli</code> has zero runtime dependencies and contains no telemetry, analytics, or tracking code. It only connects directly to public GitHub API and release asset download endpoints to fetch official binaries and verify SHA-256 checksums.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .cli-page {
+    padding: 64px 0 96px;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .page-title {
+    font-size: clamp(2.2rem, 3.5vw + 1rem, 3.2rem);
+  }
+
+  .page-subtitle {
+    font-size: 1.05rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+  }
+
+  .cli-install-box {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 32px;
+    margin-bottom: 48px;
+    border-color: var(--color-border-medium);
+  }
+
+  .install-header {
+    display: flex;
+    gap: 10px;
+  }
+
+  .install-title {
+    font-size: 1.35rem;
+    margin: 0;
+  }
+
+  .install-desc {
+    font-size: 0.95rem;
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+
+  .code-terminal {
+    background-color: var(--color-bg-canvas);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 8px;
+    padding: 12px 18px;
+  }
+
+  .code-terminal code {
+    font-size: 0.95rem;
+    color: #F8FAFC;
+  }
+
+  .npx-note {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  .npx-note code {
+    color: var(--color-purple-light);
+  }
+
+  .content-section {
+    margin-bottom: 48px;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--color-border-subtle);
+  }
+
+  .commands-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .command-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px 24px;
+  }
+
+  .command-heading code {
+    font-size: 1.05rem;
+    color: var(--color-purple-light);
+    font-weight: 700;
+  }
+
+  .command-desc {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  .command-examples {
+    background-color: var(--color-bg-canvas);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 8px;
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 6px;
+  }
+
+  .example-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  .command-examples pre {
+    margin: 0;
+  }
+
+  .command-examples code {
+    font-size: 0.85rem;
+    color: #F8FAFC;
+    line-height: 1.5;
+  }
+</style>

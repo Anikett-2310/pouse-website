@@ -1,0 +1,230 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { RELEASE_CONFIG } from '../config/release';
+
+const faqs = [
+  {
+    q: "Do I need any extra hardware to use Pouse?",
+    a: "No extra hardware is required beyond the Android phone you already carry and your Windows 10 or 11 PC. Pouse leverages your phone's built-in touchscreen, accelerometer, gyroscope, camera, and network/Bluetooth radios."
+  },
+  {
+    q: "Does Pouse work without an active Wi-Fi network?",
+    a: "Yes. Pouse supports direct Bluetooth (Classic RFCOMM) input control. You can control the mouse cursor, clicks, gestures, and soft keyboard completely offline without a router or internet connection. However, Remote Screen mode strictly requires Wi-Fi due to video bandwidth requirements."
+  },
+  {
+    q: "How does Bluetooth pairing work?",
+    a: "First, pair your Android smartphone with Windows in standard Windows Bluetooth Settings (with PIN/passkey confirmation). Once paired at the OS level, open Pouse on both devices. On Android, tap the Bluetooth tab. On the first connection, an application-level Trust-On-First-Use (TOFU) prompt will ask you to authorize the PC before any input events can be sent."
+  },
+  {
+    q: "Can Remote Screen stream video over Bluetooth?",
+    a: "No. Bluetooth RFCOMM bandwidth (~1 Mbps typical) cannot sustain real-time H.264 video streaming (up to 60 FPS, which requires 5–15 Mbps). Remote Screen video strictly requires Wi-Fi. Bluetooth is never used for video streaming, and there is no automatic fallback."
+  },
+  {
+    q: "Are macOS, Linux, or iOS supported?",
+    a: "Not in V1.0.0. Linux and macOS are planned possibilities for future desktop releases, and iOS is an idea for future Apple expansion. Currently, Pouse supports Windows 10 and 11 (64-bit) for the desktop client, and Android for the mobile app."
+  },
+  {
+    q: "Why does Windows SmartScreen display a warning when installing?",
+    a: "The Pouse Windows installer is newly released and not code-signed yet. When launching the installer, Windows SmartScreen may show 'Windows protected your PC'. To proceed safely: verify the installer's SHA-256 checksum against the official hash on our download page, click 'More info' on the dialog, and select 'Run anyway'."
+  },
+  {
+    q: "Is Pouse available on the Google Play Store?",
+    a: "No. The Pouse Android application is distributed directly as an APK download (app-release.apk) and is not published on the Google Play Store."
+  },
+  {
+    q: "What is the difference between Task View and Taskbar Apps in the utilities dock?",
+    a: "Task View triggers the Win+Tab shortcut, displaying an overview of all open desktop windows and virtual desktops. Taskbar Apps triggers the Win+T shortcut, focusing and cycling through the applications pinned to your Windows taskbar. They are distinct OS actions."
+  },
+  {
+    q: "How do I uninstall Pouse?",
+    a: "You can remove Pouse at any time from Windows Settings (Apps → Installed apps → Pouse → Uninstall) or by running 'pouse uninstall' if you use the CLI. The uninstaller cleanly removes the binary, desktop shortcuts, and the port 8081 Windows Firewall rule."
+  },
+  {
+    q: "What is the development limitation with Bluetooth discovery?",
+    a: "The Bluetooth discovery beacon currently uses a development-stage identifier. As a result, automatic beacon discovery is an active development feature rather than a final certified standard. Standard manual connection remains functional."
+  }
+];
+---
+
+<BaseLayout
+  title="Frequently Asked Questions — Pouse"
+  description="Verified answers to common questions about Pouse: hardware requirements, offline Bluetooth, Remote Screen, SmartScreen prompts, and uninstallation."
+>
+  <div class="faq-page">
+    <div class="container-narrow">
+      <div class="page-header">
+        <span class="eyebrow"><span class="eyebrow-index">FAQ</span> Knowledge Base</span>
+        <h1 class="page-title">Frequently Asked Questions</h1>
+        <p class="page-subtitle lead-text">
+          Practical, factual answers regarding Pouse compatibility, network transports, security, and setup.
+        </p>
+      </div>
+
+      <div class="faq-list stagger-group">
+        {faqs.map((item, idx) => (
+          <details class="faq-item card reveal" open={idx === 0}>
+            <summary class="faq-summary">
+              <h2 class="faq-question">{item.q}</h2>
+              <span class="faq-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="12" y1="5" x2="12" y2="19" class="faq-plus-v"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              </span>
+            </summary>
+            <div class="faq-answer-wrap">
+              <p class="faq-answer">{item.a}</p>
+            </div>
+          </details>
+        ))}
+      </div>
+
+      <div class="faq-footer-help card card-elevated reveal">
+        <h3 class="help-title">Have a technical issue or bug report?</h3>
+        <p class="help-desc">
+          Check out the public issue tracker on GitHub to report issues, request features, or review the codebase.
+        </p>
+        <div class="help-actions">
+          <a href={`${RELEASE_CONFIG.GITHUB_REPO}/issues`} target="_blank" rel="noopener noreferrer" class="btn btn-secondary animated-link">
+            Open an Issue on GitHub ↗
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .faq-page {
+    padding: 64px 0 96px;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .page-title {
+    font-size: var(--text-title);
+  }
+
+  .page-subtitle {
+    font-size: var(--text-lead);
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+  }
+
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 48px;
+  }
+
+  .faq-item {
+    padding: 0;
+    overflow: hidden;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .faq-item[open] {
+    border-color: rgba(168, 85, 247, 0.4);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 16px rgba(168, 85, 247, 0.1);
+  }
+
+  .faq-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 22px 28px;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+  }
+
+  .faq-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-question {
+    font-size: var(--text-card);
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin: 0;
+    line-height: 1.35;
+  }
+
+  .faq-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(168, 85, 247, 0.1);
+    border: 1px solid var(--color-border-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-purple-primary);
+    flex-shrink: 0;
+    transition: transform 0.25s ease, background 0.25s ease;
+  }
+
+  .faq-item[open] .faq-icon {
+    background: rgba(236, 72, 153, 0.15);
+    color: var(--color-pink-accent);
+    transform: rotate(45deg);
+  }
+
+  .faq-answer-wrap {
+    padding: 0 28px 24px;
+    animation: faqAnswerFade 0.3s ease-out;
+  }
+
+  @keyframes faqAnswerFade {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .faq-answer {
+    font-size: 0.96rem;
+    color: var(--color-text-secondary);
+    line-height: 1.65;
+    margin: 0;
+  }
+
+  .faq-footer-help {
+    padding: 32px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    border-color: var(--color-border-medium);
+  }
+
+  .help-title {
+    font-size: var(--text-card);
+    margin: 0;
+  }
+
+  .help-desc {
+    font-size: 0.95rem;
+    color: var(--color-text-secondary);
+    max-width: 500px;
+    margin: 0;
+  }
+
+  .help-actions {
+    margin-top: 8px;
+  }
+</style>

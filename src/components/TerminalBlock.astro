@@ -1,0 +1,291 @@
+---
+interface Props {
+  initialCommand?: string;
+  showTabs?: boolean;
+}
+
+const {
+  initialCommand = 'npm install -g pouse-cli\npouse install',
+  showTabs = true,
+} = Astro.props;
+---
+
+<div class="terminal-block">
+  <div class="terminal-header">
+    <div class="terminal-dots">
+      <span class="dot dot-red"></span>
+      <span class="dot dot-yellow"></span>
+      <span class="dot dot-green"></span>
+    </div>
+    <span class="terminal-title">Windows Terminal (PowerShell / Command Prompt)</span>
+    <button
+      type="button"
+      class="btn-terminal-copy"
+      id="terminalCopyBtn"
+      aria-label="Copy terminal command"
+      title="Copy command"
+    >
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+      </svg>
+      <span class="terminal-copy-label">Copy</span>
+    </button>
+  </div>
+
+  {showTabs && (
+    <div class="terminal-tabs" role="tablist">
+      <button type="button" class="tab-btn active" data-cmd="npm install -g pouse-cli&#10;pouse install" role="tab" aria-selected="true">Install</button>
+      <button type="button" class="tab-btn" data-cmd="pouse update" role="tab" aria-selected="false">Update</button>
+      <button type="button" class="tab-btn" data-cmd="pouse uninstall" role="tab" aria-selected="false">Uninstall</button>
+      <button type="button" class="tab-btn" data-cmd="pouse --help" role="tab" aria-selected="false">--help</button>
+    </div>
+  )}
+
+  <div class="terminal-body">
+    <pre class="terminal-pre"><code class="terminal-code" id="terminalCodeContent" data-full-cmd={initialCommand}>{initialCommand}</code><span class="terminal-caret" id="terminalCaret" aria-hidden="true"></span></pre>
+  </div>
+
+  <div class="terminal-footer">
+    <span class="cli-req">Requirements: Windows 10/11 • Node.js &gt;= 22</span>
+    <span class="cli-note">Default installer path: AppData\Local\Programs\Pouse</span>
+  </div>
+</div>
+
+<style>
+  .terminal-block {
+    background-color: var(--color-bg-code);
+    border: 1px solid var(--color-border-medium);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .terminal-header {
+    background-color: var(--color-bg-surface-elevated);
+    border-bottom: 1px solid var(--color-border-subtle);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .terminal-dots {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .dot-red { background-color: #EF4444; }
+  .dot-yellow { background-color: #F59E0B; }
+  .dot-green { background-color: #10B981; }
+
+  .terminal-title {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+
+  .btn-terminal-copy {
+    background: transparent;
+    border: 1px solid var(--color-border-subtle);
+    color: var(--color-text-secondary);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.75rem;
+    font-family: var(--font-sans);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 28px;
+    transition: all 0.15s ease;
+  }
+
+  .btn-terminal-copy:hover {
+    background-color: var(--color-bg-surface);
+    color: #FFFFFF;
+    border-color: var(--color-border-medium);
+  }
+
+  .terminal-tabs {
+    display: flex;
+    background-color: var(--color-bg-surface);
+    border-bottom: 1px solid var(--color-border-subtle);
+    padding: 0 12px;
+    overflow-x: auto;
+  }
+
+  .tab-btn {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--color-text-muted);
+    padding: 8px 14px;
+    font-size: 0.82rem;
+    font-family: var(--font-mono);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.15s ease, border-color 0.15s ease;
+    min-height: 38px;
+  }
+
+  .tab-btn:hover {
+    color: var(--color-text-primary);
+  }
+
+  .tab-btn.active {
+    color: var(--color-purple-light);
+    border-bottom-color: var(--color-purple-primary);
+    font-weight: 600;
+  }
+
+  .terminal-body {
+    padding: 18px 20px;
+    overflow-x: auto;
+  }
+
+  .terminal-pre {
+    margin: 0;
+  }
+
+  .terminal-code {
+    font-size: 0.9rem;
+    color: #F8FAFC;
+    line-height: 1.6;
+    white-space: pre-wrap;
+  }
+
+  .terminal-footer {
+    padding: 8px 14px;
+    background-color: var(--color-bg-surface);
+    border-top: 1px solid var(--color-border-subtle);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  .cli-req {
+    color: var(--color-status-windows);
+  }
+
+  .cli-note {
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  @media (max-width: 480px) {
+    .terminal-footer {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+  }
+
+  .btn-terminal-copy.copied {
+    border-color: var(--color-status-android);
+    color: var(--color-status-android);
+    transform: scale(1.05);
+    box-shadow: 0 0 12px rgba(74, 222, 128, 0.3);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn-terminal-copy.copied {
+      transform: none !important;
+    }
+  }
+</style>
+
+<script>
+  const copyBtn = document.getElementById('terminalCopyBtn');
+  const codeEl = document.getElementById('terminalCodeContent');
+  const tabBtns = document.querySelectorAll('.terminal-tabs .tab-btn');
+  const terminalBlock = document.querySelector('.terminal-block');
+
+  if (copyBtn && codeEl) {
+    copyBtn.addEventListener('click', async () => {
+      const textToCopy = codeEl.textContent?.trim() || '';
+      try {
+        await navigator.clipboard.writeText(textToCopy);
+        copyBtn.classList.add('copied');
+        const label = copyBtn.querySelector('.terminal-copy-label');
+        if (label) {
+          const original = label.textContent;
+          label.textContent = 'Copied!';
+          setTimeout(() => {
+            label.textContent = original;
+            copyBtn.classList.remove('copied');
+          }, 2000);
+        }
+      } catch (err) {
+        console.error('Failed to copy: ', err);
+      }
+    });
+  }
+
+  tabBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      tabBtns.forEach((b) => {
+        b.classList.remove('active');
+        b.setAttribute('aria-selected', 'false');
+      });
+      btn.classList.add('active');
+      btn.setAttribute('aria-selected', 'true');
+      const cmd = btn.getAttribute('data-cmd');
+      if (cmd && codeEl) {
+        codeEl.textContent = cmd;
+      }
+    });
+  });
+
+  // Typing effect on scroll into view (once)
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!prefersReduced && terminalBlock && codeEl) {
+    const targetCode = codeEl;
+    const fullCmd = targetCode.getAttribute('data-full-cmd') || targetCode.textContent || '';
+    let hasTyped = false;
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && !hasTyped) {
+          hasTyped = true;
+          observer.unobserve(entry.target);
+
+          targetCode.textContent = '';
+          let i = 0;
+          const speed = 25;
+          function typeChar() {
+            if (i < fullCmd.length) {
+              targetCode.textContent += fullCmd.charAt(i);
+              i++;
+              setTimeout(typeChar, speed);
+            }
+          }
+          typeChar();
+        }
+      });
+    }, { threshold: 0.2 });
+
+    observer.observe(terminalBlock);
+  }
+</script>

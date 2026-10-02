@@ -1,0 +1,46 @@
+{
+  "bluetooth-discovery": {
+    "top": 64,
+    "bottom": 112
+  },
+  "connect-qr": {
+    "top": 64,
+    "bottom": 112
+  },
+  "gaming-mode": {
+    "top": 64,
+    "bottom": 112
+  },
+  "hero-phone": {
+    "top": 64,
+    "bottom": 112
+  },
+  "motion-mode": {
+    "top": 64,
+    "bottom": 112
+  },
+  "remote-screen": {
+    "top": 64,
+    "bottom": 112
+  },
+  "touchless-mode": {
+    "top": 64,
+    "bottom": 112
+  },
+  "touchpad-mode": {
+    "top": 64,
+    "bottom": 112
+  },
+  "utilities-dock": {
+    "top": 64,
+    "bottom": 112
+  },
+  "pc-preferences": {
+    "top": 0,
+    "bottom": 0
+  },
+  "pc-tray-menu": {
+    "top": 0,
+    "bottom": 0
+  }
+}

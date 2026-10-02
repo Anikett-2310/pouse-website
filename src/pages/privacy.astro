@@ -1,0 +1,127 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Privacy Policy — Pouse"
+  description="Pouse privacy policy: zero website analytics, zero telemetry in the CLI tool, and strictly local peer-to-peer communication."
+>
+  <div class="privacy-page">
+    <div class="container-narrow">
+      <div class="page-header">
+        <span class="badge badge-brand">Transparency</span>
+        <h1 class="page-title">Privacy Policy</h1>
+        <p class="page-subtitle">
+          Effective Date: October 2, 2026
+        </p>
+      </div>
+
+      <div class="content-body">
+        <section class="policy-section card">
+          <h2 class="policy-heading">1. Website &amp; CLI Telemetry</h2>
+          <p>
+            <strong>This website does not collect any personal data.</strong> It uses zero analytics packages, zero advertising trackers, zero tracking pixels, and zero third-party cookies.
+          </p>
+          <p>
+            The <code>pouse-cli</code> command-line distribution tool collects zero telemetry and sends no analytics. It only makes standard HTTPS requests to public GitHub API and release download endpoints to fetch installer assets and verify companion SHA-256 checksums.
+          </p>
+        </section>
+
+        <section class="policy-section card">
+          <h2 class="policy-heading">2. Peer-to-Peer Input Architecture</h2>
+          <p>
+            Pouse is designed around a local communication model. Your phone communicates with your PC over your local Wi-Fi network or direct Bluetooth link:
+          </p>
+          <ul class="policy-list">
+            <li><strong>Local Communication</strong>: Input events and video streams travel locally between your paired phone and PC.</li>
+            <li><strong>On-Device Camera Processing</strong>: In Touchless mode, camera frames are processed on the phone using on-device MediaPipe and are not sent to the PC.</li>
+            <li><strong>No Online Account</strong>: Pouse requires no registration, email address, or online account to function.</li>
+          </ul>
+        </section>
+
+        <section class="policy-section card">
+          <h2 class="policy-heading">3. Local Data Storage</h2>
+          <p>
+            Pouse stores only local configuration data on your devices:
+          </p>
+          <ul class="policy-list">
+            <li><strong>Windows PC</strong>: Settings and pairing credentials are saved to <code>%APPDATA%\Pouse\config.json</code>. If an optional Wi-Fi password is enabled, it is encrypted using the Windows Data Protection API (DPAPI).</li>
+            <li><strong>Android Device</strong>: Pairing tokens and trusted PC Bluetooth identifiers are saved in local <code>SharedPreferences</code> on your phone.</li>
+          </ul>
+        </section>
+
+        <section class="policy-section card">
+          <h2 class="policy-heading">4. Contact &amp; Source Code</h2>
+          <p>
+            The complete source code for Pouse is available for review on GitHub at <a href="https://github.com/Anikett-2310/Pouse" target="_blank" rel="noopener noreferrer">https://github.com/Anikett-2310/Pouse</a>. You can inspect all networking and transport logic directly in the repository.
+          </p>
+        </section>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .privacy-page {
+    padding: 64px 0 96px;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .page-title {
+    font-size: var(--text-title);
+  }
+
+  .page-subtitle {
+    font-size: var(--text-lead);
+    color: var(--color-text-muted);
+  }
+
+  .content-body {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .policy-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 28px;
+  }
+
+  .policy-heading {
+    font-size: var(--text-card);
+    color: var(--color-text-primary);
+    margin: 0;
+  }
+
+  .policy-section p {
+    font-size: 0.94rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .policy-list {
+    list-style: disc;
+    padding-left: 20px;
+    font-size: 0.92rem;
+    color: var(--color-text-secondary);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 6px;
+  }
+
+  .policy-list strong {
+    color: var(--color-text-primary);
+  }
+</style>

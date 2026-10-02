@@ -1,0 +1,513 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PlaceholderSlot from '../components/PlaceholderSlot.astro';
+---
+
+<BaseLayout
+  title="All 5 Modes & Utilities — Pouse"
+  description="Explore Pouse's 5 top-level modes: Touchpad, Motion, Touchless, Gaming, and Remote Screen, plus companion PC utilities."
+>
+  <div class="modes-page">
+    <div class="container">
+      <!-- Page Header -->
+      <div class="page-header">
+        <span class="badge badge-brand">Input Systems</span>
+        <h1 class="page-title">Modes &amp; Controls</h1>
+        <p class="page-subtitle">
+          Pouse provides five distinct top-level input modes and a global utility dock, allowing you to control your Windows PC in whatever way best fits your task.
+        </p>
+      </div>
+
+      <!-- Quick Anchor Navigation -->
+      <div class="mode-anchors card">
+        <span class="anchors-label">Jump to mode:</span>
+        <div class="anchors-list">
+          <a href="#mode-touchpad" class="anchor-link">1. Touchpad</a>
+          <a href="#mode-motion" class="anchor-link">2. Motion</a>
+          <a href="#mode-touchless" class="anchor-link">3. Touchless</a>
+          <a href="#mode-gaming" class="anchor-link">4. Gaming</a>
+          <a href="#mode-remote-screen" class="anchor-link highlight">5. Remote Screen</a>
+          <a href="#utilities" class="anchor-link">Utilities Dock</a>
+        </div>
+      </div>
+
+      <!-- Detailed Mode Breakdowns -->
+      <div class="modes-breakdown-list">
+        <!-- 1. Touchpad Mode -->
+        <section class="mode-section content-visibility-auto reveal" id="mode-touchpad">
+          <div class="mode-section-grid">
+            <div class="mode-text">
+              <span class="eyebrow"><span class="eyebrow-index">01</span> Mode</span>
+              <h2 class="section-heading">Touchpad Mode</h2>
+              <p class="section-lead lead-text">
+                An intuitive multi-touch trackpad surface featuring a split layout: an 85% area for free movement and a dedicated 15% right-side zone for natural scrolling.
+              </p>
+              
+              <h3 class="subsection-title">Gesture Reference</h3>
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Gesture</th>
+                      <th>Action on PC</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>1-finger move (85% area)</td>
+                      <td>Cursor displacement</td>
+                    </tr>
+                    <tr>
+                      <td>Single tap</td>
+                      <td>Left mouse click</td>
+                    </tr>
+                    <tr>
+                      <td>Two-finger tap</td>
+                      <td>Right mouse click</td>
+                    </tr>
+                    <tr>
+                      <td>Double tap</td>
+                      <td>Double click</td>
+                    </tr>
+                    <tr>
+                      <td>Hold + drag</td>
+                      <td>Click-and-drag (text selection / window dragging)</td>
+                    </tr>
+                    <tr>
+                      <td>Two-finger swipe / 15% Scroll Zone</td>
+                      <td>Vertical and horizontal wheel scrolling</td>
+                    </tr>
+                    <tr>
+                      <td>Pinch</td>
+                      <td>Windows system magnification / zoom</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="mode-media">
+              <PlaceholderSlot
+                assetId="touchpad-mode"
+                label="Touchpad Mode Live UI"
+                description="Real screenshot showing the 85% touch area and 15% scroll zone divider."
+                aspectRatio="9/16"
+              />
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. Motion Mode -->
+        <section class="mode-section content-visibility-auto reveal" id="mode-motion">
+          <div class="mode-section-grid reversed">
+            <div class="mode-text">
+              <span class="eyebrow"><span class="eyebrow-index">02</span> Mode</span>
+              <h2 class="section-heading">Motion Mode</h2>
+              <p class="section-lead lead-text">
+                In-air pointer steering using your phone's hardware accelerometer and gyroscope. Perfect for presentations, couch navigation, or casual browsing.
+              </p>
+              
+              <h3 class="subsection-title">How It Operates</h3>
+              <ul class="feature-bullets">
+                <li><strong>Trigger Activation</strong>: Hold the large circular button in the center of your screen. As long as this button is held, phone rotation and tilt steer the PC cursor.</li>
+                <li><strong>Instant Release</strong>: Lifting your thumb releases cursor control instantly, allowing you to reposition your hand without moving the pointer.</li>
+                <li><strong>Sensor Processing</strong>: Uses Flutter's <code>sensors_plus</code> library to sample gyro and accelerometer events with zero external network overhead.</li>
+              </ul>
+            </div>
+
+            <div class="mode-media">
+              <PlaceholderSlot
+                assetId="motion-mode"
+                label="Motion Mode Interface"
+                description="Real screenshot showing the center hold button and tilt sensitivity display."
+                aspectRatio="9/16"
+              />
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. Touchless Mode -->
+        <section class="mode-section content-visibility-auto reveal" id="mode-touchless">
+          <div class="mode-section-grid">
+            <div class="mode-text">
+              <span class="eyebrow"><span class="eyebrow-index">03</span> Mode</span>
+              <h2 class="section-heading">Touchless Mode</h2>
+              <p class="section-lead lead-text">
+                Computer-vision hand tracking using your phone's front camera. Control your mouse cursor by moving your hand in front of the lens without ever touching the screen.
+              </p>
+              
+              <h3 class="subsection-title">Local Machine Learning</h3>
+              <ul class="feature-bullets">
+                <li><strong>On-Device MediaPipe</strong>: Hand landmark inference runs locally on your phone's processor via native Android Kotlin bridges. No camera frames are ever sent over the network or saved to disk.</li>
+                <li><strong>Palm Steering</strong>: Moving your palm across the camera frame smoothly translates to relative PC cursor movements.</li>
+                <li><strong>Pinch Clicking</strong>: Bringing your thumb and index finger together triggers a left click on your PC.</li>
+              </ul>
+            </div>
+
+            <div class="mode-media">
+              <PlaceholderSlot
+                assetId="touchless-mode"
+                label="Touchless Camera Preview"
+                description="Real screenshot showing front camera preview with MediaPipe hand landmark skeleton overlay."
+                aspectRatio="9/16"
+              />
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. Gaming Mode -->
+        <section class="mode-section content-visibility-auto reveal" id="mode-gaming">
+          <div class="mode-section-grid reversed">
+            <div class="mode-text">
+              <span class="eyebrow"><span class="eyebrow-index">04</span> Mode</span>
+              <h2 class="section-heading">Gaming Mode</h2>
+              <p class="section-lead lead-text">
+                A virtual on-screen gamepad controller for casual PC gaming, directional navigation, and media playback.
+              </p>
+              
+              <h3 class="subsection-title">Controls Layout</h3>
+              <ul class="feature-bullets">
+                <li><strong>Virtual Analog Stick &amp; WASD</strong>: Directional steering and WASD/Arrow mode toggles.</li>
+                <li><strong>On-Screen Action Buttons</strong>: Primary action buttons mapped to standard PC game inputs.</li>
+                <li><strong>Left &amp; Right Mouse Clicks</strong>: Dedicated hardware click buttons below the pad.</li>
+              </ul>
+            </div>
+
+            <div class="mode-media">
+              <PlaceholderSlot
+                assetId="gaming-mode"
+                label="Virtual Gamepad UI"
+                description="Real screenshot showing the mobile gamepad interface with WASD and Arrow controls."
+                aspectRatio="9/16"
+              />
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. Remote Screen Mode (TOP-LEVEL MODE) -->
+        <section class="mode-section highlight-section content-visibility-auto reveal" id="mode-remote-screen">
+          <div class="mode-section-grid">
+            <div class="mode-text">
+              <div class="highlight-badge-row">
+                <span class="eyebrow"><span class="eyebrow-index">05</span> Top-Level Mode</span>
+                <span class="badge badge-windows">Wi-Fi Only</span>
+              </div>
+              <h2 class="section-heading">Remote Screen Mode</h2>
+              <p class="section-lead lead-text">
+                A dedicated top-level mode that streams your PC's primary monitor directly to your phone screen at up to 60 FPS, with direct on-screen touch interaction.
+              </p>
+              
+              <div class="notice-box">
+                <div class="notice-title">Architecture Clarification:</div>
+                <div class="notice-body">
+                  Remote Screen is a top-level mode selected from the main navigation bar. It is not an item inside Utilities, and there is no Remote Screen shortcut in the utility dock.
+                </div>
+              </div>
+
+              <h3 class="subsection-title">Pipeline Architecture</h3>
+              <ul class="feature-bullets">
+                <li><strong>Windows Capture</strong>: Uses Windows Graphics Capture (WGC) and Direct3D 11 to capture desktop frames with low latency.</li>
+                <li><strong>Hardware Encoding</strong>: Windows Media Foundation encodes frames in H.264 Annex B format.</li>
+                <li><strong>Android Decoding</strong>: Android hardware MediaCodec decodes video directly onto a SurfaceTexture.</li>
+                <li><strong>Absolute Touch Input</strong>: Touching anywhere on the streamed screen sends normalized absolute coordinates back to the PC.</li>
+              </ul>
+
+              <h3 class="subsection-title">Operational Boundaries &amp; Limits</h3>
+              <ul class="limits-list">
+                <li><strong>Strictly Wi-Fi only</strong>: Bluetooth bandwidth (~1 Mbps) cannot carry real-time video (requires 5–15 Mbps). Bluetooth is never used for video streaming, and there is no automatic fallback.</li>
+                <li><strong>Primary monitor only</strong>: Multi-monitor capture is not supported in V1.0.0.</li>
+                <li><strong>Windows security barriers</strong>: Screen capture is blocked by Windows Secure Desktop (User Account Control prompts) and the Windows Lock Screen.</li>
+                <li><strong>Hardware requirement</strong>: Requires capable GPU drivers on both the PC and phone for hardware encoding and decoding.</li>
+              </ul>
+            </div>
+
+            <div class="mode-media">
+              <PlaceholderSlot
+                assetId="remote-screen"
+                label="Remote Screen Live Desktop Stream"
+                description="Real screenshot showing the live Windows desktop streaming to the phone screen with touch interaction."
+                aspectRatio="9/16"
+              />
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Utilities Section (SEPARATE) -->
+      <section class="utilities-deepdive content-visibility-auto reveal" id="utilities">
+        <div class="section-header">
+          <span class="badge badge-brand">Always Accessible</span>
+          <h2 class="section-title">The Utilities Dock</h2>
+          <p class="section-desc">
+            A collapsible utility bar present at the top of input screens. It provides direct system actions regardless of which input mode is active.
+          </p>
+        </div>
+
+        <div class="utilities-table-grid stagger-group">
+          <div class="utility-category card reveal">
+            <h3 class="category-title">PC Audio &amp; Display</h3>
+            <ul class="category-list">
+              <li><strong>Volume Up / Down / Mute</strong>: Native media key virtual keycodes injected directly into the Windows audio engine.</li>
+              <li><strong>Brightness Up (+10%) / Down (-10%)</strong>: Platform-adaptive control using WMI for laptop internal screens and DDC/CI for external monitors.</li>
+            </ul>
+          </div>
+
+          <div class="utility-category card reveal">
+            <h3 class="category-title">Windows OS Actions</h3>
+            <ul class="category-list">
+              <li><strong>Task View</strong> (<code>Win+Tab</code>): Opens the Windows Task View overview to see open windows and virtual desktops.</li>
+              <li><strong>Taskbar Apps</strong> (<code>Win+T</code>): Focuses and cycles through applications pinned to the Windows taskbar. (Distinct from Task View).</li>
+              <li><strong>Show Desktop</strong> (<code>Win+D</code>): Minimizes all open windows.</li>
+              <li><strong>Windows Search</strong> (<code>Win+S</code>): Launches Windows Search.</li>
+              <li><strong>Previous / Next App</strong> (<code>Alt+Tab</code>): Cycles through running applications.</li>
+            </ul>
+          </div>
+
+          <div class="utility-category card reveal">
+            <h3 class="category-title">Keyboard &amp; Cheatsheets</h3>
+            <ul class="category-list">
+              <li><strong>Soft Keyboard</strong>: Injects typed UTF-8 text strings and keypresses for <code>Enter</code>, <code>Backspace</code>, <code>Space</code>, <code>Tab</code>, and <code>Esc</code>.</li>
+              <li><strong>Gesture Guide</strong>: Built-in help modal outlining all multi-finger gesture mappings.</li>
+              <li><strong>Zoom Control</strong>: Direct control for Windows Magnifier scaling.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="utilities-media-slot reveal" style="margin-top: 36px; max-width: 340px; margin-left: auto; margin-right: auto;">
+          <PlaceholderSlot
+            assetId="utilities-dock"
+            label="Mobile Utility Dock"
+            description="Real screenshot showing the expanded utility dock with PC volume, brightness, and OS action buttons."
+            aspectRatio="9/16"
+          />
+        </div>
+      </section>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .modes-page {
+    padding: 64px 0 96px;
+  }
+
+  .page-header {
+    text-align: center;
+    max-width: 680px;
+    margin: 0 auto 36px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .page-title {
+    font-size: clamp(2.2rem, 3.5vw + 1rem, 3.2rem);
+  }
+
+  .page-subtitle {
+    font-size: 1.05rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+  }
+
+  .mode-anchors {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 20px;
+    margin-bottom: 56px;
+    background-color: var(--color-bg-surface-elevated);
+    border-color: var(--color-border-subtle);
+  }
+
+  .anchors-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+  }
+
+  .anchors-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .anchor-link {
+    font-size: 0.88rem;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background-color: var(--color-bg-canvas);
+    border: 1px solid var(--color-border-subtle);
+    transition: all 0.15s ease;
+  }
+
+  .anchor-link:hover {
+    color: #FFFFFF;
+    border-color: var(--color-purple-primary);
+  }
+
+  .anchor-link.highlight {
+    color: var(--color-pink-accent);
+    border-color: rgba(236, 72, 153, 0.4);
+  }
+
+  .modes-breakdown-list {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+  }
+
+  .mode-section {
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+
+  .mode-section-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    align-items: center;
+  }
+
+  @media (min-width: 860px) {
+    .mode-section-grid {
+      grid-template-columns: 1.25fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .mode-section-grid.reversed {
+      grid-template-columns: 1fr 1.25fr;
+    }
+
+    .mode-section-grid.reversed .mode-media {
+      order: 1;
+    }
+
+    .mode-section-grid.reversed .mode-text {
+      order: 2;
+    }
+  }
+
+  .mode-media {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+
+  .highlight-section {
+    background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(236, 72, 153, 0.08), transparent 70%);
+    border: 1px solid rgba(236, 72, 153, 0.3);
+    border-radius: 20px;
+    padding: 32px 28px;
+  }
+
+  .highlight-badge-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .mode-text {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .section-heading {
+    font-size: var(--text-section);
+    margin: 0;
+  }
+
+  .section-lead {
+    font-size: var(--text-lead);
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .subsection-title {
+    font-size: var(--text-card);
+    margin-top: 12px;
+    color: var(--color-text-primary);
+  }
+
+  .feature-bullets {
+    list-style: disc;
+    padding-left: 20px;
+    font-size: 0.92rem;
+    color: var(--color-text-secondary);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .feature-bullets strong {
+    color: var(--color-text-primary);
+  }
+
+  .limits-list {
+    list-style: disc;
+    padding-left: 20px;
+    font-size: 0.9rem;
+    color: var(--color-status-warning);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .limits-list strong {
+    color: #F8FAFC;
+  }
+
+  /* Utilities Deep Dive */
+  .utilities-deepdive {
+    margin-top: 56px;
+    padding-top: 36px;
+    border-top: 1px solid var(--color-border-subtle);
+  }
+
+  .utilities-table-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin-top: 36px;
+  }
+
+  @media (min-width: 800px) {
+    .utilities-table-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .utility-category {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .category-title {
+    font-size: 1.15rem;
+    margin: 0;
+    color: var(--color-purple-light);
+  }
+
+  .category-list {
+    list-style: disc;
+    padding-left: 20px;
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .category-list code {
+    color: var(--color-purple-light);
+  }
+</style>

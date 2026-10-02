@@ -1,0 +1,195 @@
+---
+import { RELEASE_CONFIG } from '../config/release';
+
+interface Props {
+  compact?: boolean;
+}
+
+const { compact = false } = Astro.props;
+---
+
+<div class={`hash-verifier card ${compact ? 'compact' : ''}`}>
+  <div class="hash-header">
+    <div class="hash-title-group">
+      <span class="badge badge-brand">Integrity</span>
+      <h3 class="hash-title">Official SHA-256 Checksum</h3>
+    </div>
+    <a
+      href={RELEASE_CONFIG.WINDOWS.SHA256_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="hash-raw-link"
+    >
+      View .sha256 on GitHub ↗
+    </a>
+  </div>
+
+  <p class="hash-desc">
+    Verify your download before execution. Match this digest with the companion checksum asset published on the official GitHub release.
+  </p>
+
+  <div class="hash-display-box">
+    <code class="hash-code" id="sha256Hash">{RELEASE_CONFIG.WINDOWS.SHA256}</code>
+    <button
+      type="button"
+      class="btn btn-secondary btn-copy"
+      id="copyHashBtn"
+      aria-label="Copy SHA-256 hash to clipboard"
+    >
+      <svg class="copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+      </svg>
+      <span class="copy-label">Copy Hash</span>
+    </button>
+  </div>
+
+  <div class="verification-commands">
+    <span class="verify-heading">Verify in Windows PowerShell:</span>
+    <div class="command-box">
+      <code>(Get-FileHash .\{RELEASE_CONFIG.WINDOWS.FILENAME}).Hash -eq '{RELEASE_CONFIG.WINDOWS.SHA256}'</code>
+    </div>
+    <span class="verify-heading">Or via Command Prompt:</span>
+    <div class="command-box">
+      <code>certutil -hashfile {RELEASE_CONFIG.WINDOWS.FILENAME} SHA256</code>
+    </div>
+  </div>
+</div>
+
+<style>
+  .hash-verifier {
+    background-color: var(--color-bg-surface-elevated);
+    border: 1px solid var(--color-border-medium);
+    border-radius: 14px;
+    padding: 24px;
+  }
+
+  .hash-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .hash-title-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .hash-title {
+    font-size: 1.1rem;
+    margin: 0;
+  }
+
+  .hash-raw-link {
+    font-size: 0.85rem;
+    color: var(--color-purple-light);
+    text-decoration: none;
+  }
+
+  .hash-raw-link:hover {
+    text-decoration: underline;
+  }
+
+  .hash-desc {
+    font-size: 0.88rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+
+  .hash-display-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background-color: var(--color-bg-canvas);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 20px;
+  }
+
+  .hash-code {
+    font-size: 0.85rem;
+    color: var(--color-purple-light);
+    word-break: break-all;
+    user-select: all;
+  }
+
+  .btn-copy {
+    flex-shrink: 0;
+    min-height: 38px;
+    padding: 6px 14px;
+    font-size: 0.85rem;
+  }
+
+  .verification-commands {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 14px;
+    border-top: 1px solid var(--color-border-subtle);
+  }
+
+  .verify-heading {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .command-box {
+    background-color: var(--color-bg-canvas);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 8px;
+    padding: 8px 12px;
+    overflow-x: auto;
+  }
+
+  .command-box code {
+    font-size: 0.82rem;
+    color: #F8FAFC;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 640px) {
+    .hash-display-box {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .btn-copy {
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  const copyBtn = document.getElementById('copyHashBtn');
+  const hashCode = document.getElementById('sha256Hash');
+
+  if (copyBtn && hashCode) {
+    copyBtn.addEventListener('click', async () => {
+      const textToCopy = hashCode.textContent?.trim() || '';
+      try {
+        await navigator.clipboard.writeText(textToCopy);
+        const label = copyBtn.querySelector('.copy-label');
+        if (label) {
+          const original = label.textContent;
+          label.textContent = 'Copied!';
+          copyBtn.style.borderColor = 'var(--color-status-android)';
+          setTimeout(() => {
+            label.textContent = original;
+            copyBtn.style.borderColor = '';
+          }, 2000);
+        }
+      } catch (err) {
+        console.error('Failed to copy hash: ', err);
+      }
+    });
+  }
+</script>

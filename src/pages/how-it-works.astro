@@ -1,0 +1,260 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import TechnicalDetails from '../components/TechnicalDetails.astro';
+import PlaceholderSlot from '../components/PlaceholderSlot.astro';
+---
+
+<BaseLayout
+  title="How It Works — Architecture & Protocol — Pouse"
+  description="Learn how Pouse connects your Android phone to a Windows PC using local Wi-Fi or Bluetooth, handles transport arbitration, and injects OS inputs."
+>
+  <div class="how-page">
+    <div class="container-narrow">
+      <div class="page-header">
+        <span class="badge badge-brand">System Design</span>
+        <h1 class="page-title">How Pouse Works</h1>
+        <p class="page-subtitle">
+          From screen touch or sensor movement on Android to pointer injection on Windows, here is the complete journey of an input event.
+        </p>
+      </div>
+
+      <!-- The 5-Step Pipeline -->
+      <div class="pipeline-steps stagger-group content-visibility-auto">
+        <div class="pipeline-step card reveal">
+          <div class="step-num-badge">01</div>
+          <div class="step-content">
+            <h2 class="step-title">Desktop Client Initialization</h2>
+            <p class="step-desc">
+              When you launch Pouse on Windows, the Rust background service starts up. It reads your configuration, checks display capabilities for brightness control, opens a local WebSocket server on port <strong>8081</strong>, and starts a Bluetooth discovery beacon. It displays a pairing QR code in the console or system tray.
+            </p>
+            <div class="step-media" style="margin-top: 20px; max-width: 420px;">
+              <PlaceholderSlot
+                assetId="pc-tray-menu"
+                label="System Tray &amp; Pairing Display"
+                description="Live Windows tray context menu showing the QR code pairing prompt."
+                aspectRatio="4/3"
+                deviceType="desktop"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="pipeline-step card reveal">
+          <div class="step-num-badge">02</div>
+          <div class="step-content">
+            <h2 class="step-title">Establishing Connection (Wi-Fi or Bluetooth)</h2>
+            <p class="step-desc">
+              You choose how to connect based on your environment:
+            </p>
+            <ul class="step-sublist">
+              <li><strong>Over Wi-Fi</strong>: Both devices connect to the same local network. Scanning the PC's QR code delivers the connection address and a 128-bit cryptographic pair token to the phone.</li>
+              <li><strong>Over Bluetooth</strong>: For offline use without a router. You pair the devices in Windows Bluetooth settings, and the mobile app connects directly over Bluetooth RFCOMM.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="pipeline-step card reveal">
+          <div class="step-num-badge">03</div>
+          <div class="step-content">
+            <h2 class="step-title">Authentication &amp; Trust Gate</h2>
+            <p class="step-desc">
+              Merely reaching the PC over a network is never enough to inject input:
+            </p>
+            <ul class="step-sublist">
+              <li>On Wi-Fi, the phone must present the secret pair token before the PC accepts input commands. (Optional secondary Wi-Fi password can be required).</li>
+              <li>On Bluetooth, the phone prompts you with a Trust-On-First-Use (TOFU) confirmation dialog before sending any events.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="pipeline-step card reveal">
+          <div class="step-num-badge">04</div>
+          <div class="step-content">
+            <h2 class="step-title">Transport Arbitration (Input Ownership)</h2>
+            <p class="step-desc">
+              Only one connection can control your PC's input at any given moment. If you switch from Wi-Fi to Bluetooth while dragging a file or holding a key, Pouse automatically releases all held mouse buttons and keys before granting control to the new transport, preventing stuck inputs.
+            </p>
+          </div>
+        </div>
+
+        <div class="pipeline-step card reveal">
+          <div class="step-num-badge">05</div>
+          <div class="step-content">
+            <h2 class="step-title">Windows Input Injection</h2>
+            <p class="step-desc">
+              The Windows client decodes incoming events into native operating system input calls. Mouse movements, clicks, text typing, and media keys are injected directly into Windows at the OS level, working seamlessly with all desktop applications.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Collapsible Technical Details (Internal Architecture) -->
+      <TechnicalDetails title="Technical details: Rust modules, protocol, and invariants">
+        <div class="tech-deepdive">
+          <h4>Event Serialization &amp; Protocol</h4>
+          <p>
+            Both Wi-Fi (WebSocket text frames) and Bluetooth (newline-delimited UTF-8 over RFCOMM) carry the exact same JSON event protocol:
+          </p>
+          <pre class="code-block"><code>// Example relative mouse move
+{`{"event": "MOVE", "dx": 12.5, "dy": -4.2}`}
+
+// Example gesture trigger
+{`{"event": "THREE_FINGER_UP"}`} // Triggers Win+Tab Task View
+
+// Example text entry
+{`{"event": "TEXT_INPUT", "text": "Hello World"}`}</code></pre>
+
+          <h4>InputOwner Singleton (input_owner.rs)</h4>
+          <p>
+            The Rust client protects input injection behind a global <code>InputOwner</code> mutex. It enforces:
+          </p>
+          <ul>
+            <li><code>RFCOMM_CONNECTED != INPUT_AUTHORIZED</code>: A Bluetooth handshake alone does not hold input ownership. Ownership is acquired only upon receiving the first authorized substantive input event.</li>
+            <li>Keep-alive <code>PING</code>/<code>PONG</code> events are explicitly excluded from acquiring input ownership.</li>
+            <li>Releasing ownership triggers <code>InputHandler::release_all()</code> to clear any held virtual keys or mouse buttons.</li>
+          </ul>
+
+          <h4>Remote Screen Capture Pipeline</h4>
+          <p>
+            Remote Screen uses Windows Graphics Capture (WGC) on DirectX 11 textures, converted via a GPU video processor and encoded into H.264 Annex B NAL units with low-latency hardware encoding (Windows Media Foundation). Encoded frames are broadcast over a dedicated WebSocket path (<code>/screen?token=&lt;token&gt;</code>) to Android's hardware <code>MediaCodec</code> decoder.
+          </p>
+        </div>
+      </TechnicalDetails>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .how-page {
+    padding: 64px 0 96px;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .page-title {
+    font-size: clamp(2.2rem, 3.5vw + 1rem, 3.2rem);
+  }
+
+  .page-subtitle {
+    font-size: 1.05rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+  }
+
+  .pipeline-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-bottom: 40px;
+  }
+
+  .pipeline-step {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    padding: 28px;
+  }
+
+  .step-num-badge {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--color-bg-canvas);
+    border: 1px solid var(--color-border-medium);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--color-purple-light);
+  }
+
+  .step-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .step-title {
+    font-size: 1.25rem;
+    margin: 0;
+  }
+
+  .step-desc {
+    font-size: 0.94rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .step-sublist {
+    list-style: disc;
+    padding-left: 20px;
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 6px;
+  }
+
+  .step-sublist strong {
+    color: var(--color-text-primary);
+  }
+
+  .tech-deepdive {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .tech-deepdive h4 {
+    font-size: 1rem;
+    color: var(--color-purple-light);
+    margin-top: 8px;
+  }
+
+  .tech-deepdive p {
+    font-size: 0.88rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .code-block {
+    background-color: var(--color-bg-canvas);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 8px;
+    padding: 12px 16px;
+    overflow-x: auto;
+  }
+
+  .code-block code {
+    font-size: 0.82rem;
+    color: #F8FAFC;
+    line-height: 1.5;
+  }
+
+  .tech-deepdive ul {
+    list-style: disc;
+    padding-left: 20px;
+    font-size: 0.88rem;
+    color: var(--color-text-secondary);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .tech-deepdive code {
+    color: var(--color-purple-light);
+  }
+</style>

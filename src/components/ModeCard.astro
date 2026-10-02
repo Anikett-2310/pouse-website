@@ -1,0 +1,276 @@
+---
+interface Props {
+  modeId: 'touchpad' | 'motion' | 'touchless' | 'gaming' | 'remote-screen';
+  title: string;
+  badge: string;
+  technology: string;
+  description: string;
+  inputs: string[];
+  limitations?: string[];
+  isTopLevelHighlight?: boolean;
+}
+
+const {
+  modeId,
+  title,
+  badge,
+  technology,
+  description,
+  inputs,
+  limitations = [],
+  isTopLevelHighlight = false,
+} = Astro.props;
+---
+
+<div class={`mode-card card ${isTopLevelHighlight ? 'card-highlight' : ''}`} id={`mode-${modeId}`}>
+  <div class="mode-header">
+    <div class="mode-visual-box">
+      {modeId === 'touchpad' && (
+        <svg viewBox="0 0 160 100" class="mode-svg" fill="none" aria-hidden="true">
+          <!-- Phone outline -->
+          <rect x="10" y="10" width="140" height="80" rx="8" fill="#130B22" stroke="rgba(168, 85, 247, 0.4)" stroke-width="1.5" />
+          <!-- 85% Touch Area -->
+          <rect x="15" y="15" width="105" height="70" rx="4" fill="rgba(168, 85, 247, 0.08)" />
+          <text x="67" y="55" fill="#E9D5FF" font-size="10" font-family="sans-serif" text-anchor="middle" font-weight="600">85% Touchpad</text>
+          <!-- Divider -->
+          <line x1="123" y1="15" x2="123" y2="85" stroke="rgba(236, 72, 153, 0.4)" stroke-width="1.5" stroke-dasharray="3 3" />
+          <!-- 15% Scroll Zone -->
+          <rect x="126" y="15" width="19" height="70" rx="4" fill="rgba(236, 72, 153, 0.12)" />
+          <text x="135" y="55" fill="#F472B6" font-size="8" font-family="sans-serif" text-anchor="middle">Scroll</text>
+        </svg>
+      )}
+
+      {modeId === 'motion' && (
+        <svg viewBox="0 0 160 100" class="mode-svg" fill="none" aria-hidden="true">
+          <rect x="35" y="10" width="90" height="80" rx="8" fill="#130B22" stroke="rgba(168, 85, 247, 0.4)" stroke-width="1.5" />
+          <!-- Center Trigger Button -->
+          <circle cx="80" cy="50" r="18" fill="rgba(168, 85, 247, 0.25)" stroke="#A855F7" stroke-width="2" />
+          <text x="80" y="53" fill="#FFFFFF" font-size="8" font-family="sans-serif" text-anchor="middle" font-weight="700">HOLD</text>
+          <!-- Tilt arrows -->
+          <path d="M48 50 L58 45 L58 55 Z" fill="#D946EF" />
+          <path d="M112 50 L102 45 L102 55 Z" fill="#D946EF" />
+          <path d="M80 20 L85 30 L75 30 Z" fill="#D946EF" />
+          <path d="M80 80 L85 70 L75 70 Z" fill="#D946EF" />
+        </svg>
+      )}
+
+      {modeId === 'touchless' && (
+        <svg viewBox="0 0 160 100" class="mode-svg" fill="none" aria-hidden="true">
+          <rect x="35" y="10" width="90" height="80" rx="8" fill="#130B22" stroke="rgba(168, 85, 247, 0.4)" stroke-width="1.5" />
+          <!-- Camera lens at top -->
+          <circle cx="80" cy="18" r="3" fill="#EC4899" />
+          <!-- Hand Icon / Tracking Field -->
+          <circle cx="80" cy="55" r="22" stroke="rgba(168, 85, 247, 0.3)" stroke-width="1" stroke-dasharray="2 2" />
+          <path d="M72 65 C72 52 75 42 80 42 C85 42 88 52 88 65" stroke="#A855F7" stroke-width="2" stroke-linecap="round" fill="none" />
+          <circle cx="76" cy="46" r="2" fill="#E9D5FF" />
+          <circle cx="84" cy="46" r="2" fill="#E9D5FF" />
+          <!-- Pinch indicator -->
+          <path d="M80 42 L80 34" stroke="#EC4899" stroke-width="1.5" />
+        </svg>
+      )}
+
+      {modeId === 'gaming' && (
+        <svg viewBox="0 0 160 100" class="mode-svg" fill="none" aria-hidden="true">
+          <!-- Landscape gamepad outline -->
+          <rect x="10" y="15" width="140" height="70" rx="10" fill="#130B22" stroke="rgba(168, 85, 247, 0.4)" stroke-width="1.5" />
+          <!-- Virtual Analog Stick -->
+          <circle cx="45" cy="50" r="16" stroke="rgba(168, 85, 247, 0.4)" stroke-width="1" />
+          <circle cx="45" cy="50" r="8" fill="#A855F7" />
+          <!-- Virtual D-Pad -->
+          <rect x="75" y="44" width="12" height="12" rx="2" fill="rgba(168, 85, 247, 0.2)" />
+          <!-- Action Buttons -->
+          <circle cx="118" cy="42" r="5" fill="#EC4899" />
+          <circle cx="128" cy="52" r="5" fill="#A855F7" />
+          <circle cx="108" cy="52" r="5" fill="#38BDF8" />
+          <circle cx="118" cy="62" r="5" fill="#FBBF24" />
+        </svg>
+      )}
+
+      {modeId === 'remote-screen' && (
+        <svg viewBox="0 0 160 100" class="mode-svg" fill="none" aria-hidden="true">
+          <!-- Monitor Frame -->
+          <rect x="15" y="12" width="130" height="66" rx="4" fill="#0D0715" stroke="#A855F7" stroke-width="1.5" />
+          <!-- Display Stream (Primary Monitor) -->
+          <rect x="20" y="17" width="120" height="56" rx="2" fill="rgba(168, 85, 247, 0.15)" />
+          <!-- Desktop elements -->
+          <rect x="24" y="22" width="40" height="24" rx="2" fill="rgba(255, 255, 255, 0.08)" />
+          <rect x="20" y="67" width="120" height="6" fill="#1A102A" />
+          <text x="80" y="48" fill="#E9D5FF" font-size="8.5" font-family="sans-serif" text-anchor="middle" font-weight="600">Up to 60 FPS (Wi-Fi)</text>
+          <!-- Monitor Stand -->
+          <path d="M72 78 L88 78 L85 86 L75 86 Z" fill="rgba(168, 85, 247, 0.4)" />
+          <rect x="65" y="86" width="30" height="3" rx="1" fill="#A855F7" />
+        </svg>
+      )}
+    </div>
+
+    <div class="mode-title-group">
+      <div class="mode-badges">
+        <span class="badge badge-brand">{badge}</span>
+        {isTopLevelHighlight && <span class="badge badge-warning">Top-Level Mode</span>}
+      </div>
+      <h3 class="mode-title">{title}</h3>
+      <span class="mode-tech">{technology}</span>
+    </div>
+  </div>
+
+  <p class="mode-description">{description}</p>
+
+  <div class="mode-details">
+    <h4 class="details-heading">Input Capabilities</h4>
+    <ul class="input-list">
+      {inputs.map((input) => (
+        <li class="input-item">
+          <svg class="check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          <span>{input}</span>
+        </li>
+      ))}
+    </ul>
+
+    {limitations.length > 0 && (
+      <div class="mode-limits">
+        <h4 class="limits-heading">Operational Boundaries</h4>
+        <ul class="limits-list">
+          {limitations.map((limit) => (
+            <li class="limit-item">
+              <svg class="warn-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+              <span>{limit}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+  </div>
+</div>
+
+<style>
+  .mode-card {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    height: 100%;
+  }
+
+  .card-highlight {
+    border-color: rgba(236, 72, 153, 0.4);
+    box-shadow: 0 8px 30px rgba(236, 72, 153, 0.08);
+  }
+
+  .mode-header {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .mode-visual-box {
+    background: var(--color-bg-canvas);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 12px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mode-svg {
+    width: 100%;
+    max-height: 120px;
+  }
+
+  .mode-title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .mode-badges {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .mode-title {
+    font-size: 1.35rem;
+    margin: 0;
+  }
+
+  .mode-tech {
+    font-size: 0.82rem;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+  }
+
+  .mode-description {
+    font-size: 0.92rem;
+    color: var(--color-text-secondary);
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  .mode-details {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid var(--color-border-subtle);
+  }
+
+  .details-heading, .limits-heading {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  .input-list, .limits-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .input-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 0.88rem;
+    color: var(--color-text-secondary);
+  }
+
+  .check-icon {
+    color: var(--color-status-android);
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+
+  .mode-limits {
+    background-color: var(--color-bg-canvas);
+    border: 1px solid rgba(251, 191, 36, 0.2);
+    border-radius: 8px;
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .limit-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 0.82rem;
+    color: var(--color-status-warning);
+    line-height: 1.4;
+  }
+
+  .warn-icon {
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+</style>

@@ -1,0 +1,79 @@
+{
+  "bluetooth-discovery": {
+    "width": 738,
+    "height": 1424,
+    "aspectRatio": "738 / 1424",
+    "ratio": 0.51826,
+    "type": "phone"
+  },
+  "connect-qr": {
+    "width": 738,
+    "height": 1424,
+    "aspectRatio": "738 / 1424",
+    "ratio": 0.51826,
+    "type": "phone"
+  },
+  "gaming-mode": {
+    "width": 738,
+    "height": 1424,
+    "aspectRatio": "738 / 1424",
+    "ratio": 0.51826,
+    "type": "phone"
+  },
+  "hero-phone": {
+    "width": 738,
+    "height": 1424,
+    "aspectRatio": "738 / 1424",
+    "ratio": 0.51826,
+    "type": "phone"
+  },
+  "motion-mode": {
+    "width": 738,
+    "height": 1424,
+    "aspectRatio": "738 / 1424",
+    "ratio": 0.51826,
+    "type": "phone"
+  },
+  "pc-preferences": {
+    "width": 1600,
+    "height": 1074,
+    "aspectRatio": "1600 / 1074",
+    "ratio": 1.48976,
+    "type": "desktop"
+  },
+  "pc-tray-menu": {
+    "width": 550,
+    "height": 689,
+    "aspectRatio": "550 / 689",
+    "ratio": 0.79826,
+    "type": "desktop"
+  },
+  "remote-screen": {
+    "width": 738,
+    "height": 1424,
+    "aspectRatio": "738 / 1424",
+    "ratio": 0.51826,
+    "type": "phone"
+  },
+  "touchless-mode": {
+    "width": 738,
+    "height": 1424,
+    "aspectRatio": "738 / 1424",
+    "ratio": 0.51826,
+    "type": "phone"
+  },
+  "touchpad-mode": {
+    "width": 738,
+    "height": 1424,
+    "aspectRatio": "738 / 1424",
+    "ratio": 0.51826,
+    "type": "phone"
+  },
+  "utilities-dock": {
+    "width": 738,
+    "height": 1424,
+    "aspectRatio": "738 / 1424",
+    "ratio": 0.51826,
+    "type": "phone"
+  }
+}

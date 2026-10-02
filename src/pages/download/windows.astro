@@ -1,0 +1,312 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import HashVerifier from '../../components/HashVerifier.astro';
+import PlaceholderSlot from '../../components/PlaceholderSlot.astro';
+import { RELEASE_CONFIG } from '../../config/release';
+---
+
+<BaseLayout
+  title="Windows Setup Guide — Pouse Desktop Client"
+  description="Detailed installation, SHA-256 verification, firewall configuration, and system tray guide for Pouse Windows desktop client."
+>
+  <div class="subpage-wrap">
+    <div class="container-narrow">
+      <div class="subpage-header">
+        <div class="breadcrumb">
+          <a href="/download">Downloads</a>
+          <span>/</span>
+          <span>Windows</span>
+        </div>
+        <span class="badge badge-windows">Desktop Client</span>
+        <h1 class="page-title">Windows Installation & Setup</h1>
+        <p class="page-subtitle">
+          Everything you need to install, verify, and run Pouse on Windows 10 and Windows 11.
+        </p>
+      </div>
+
+      <!-- Quick Download Banner -->
+      <div class="quick-download-banner card card-elevated">
+        <div class="banner-info">
+          <h2 class="banner-title">{RELEASE_CONFIG.WINDOWS.FILENAME}</h2>
+          <span class="banner-meta">Version {RELEASE_CONFIG.VERSION} • {RELEASE_CONFIG.WINDOWS.SIZE_FORMATTED} • Hosted on GitHub Releases</span>
+        </div>
+        <a href={RELEASE_CONFIG.WINDOWS.DOWNLOAD_URL} class="btn btn-primary btn-lg">
+          Download Installer (.exe)
+        </a>
+      </div>
+
+      <!-- System Requirements -->
+      <div class="content-section reveal">
+        <h2 class="section-title">System Requirements</h2>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Requirement</th>
+                <th>Specification</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Operating System</td>
+                <td>Windows 10 / Windows 11 (64-bit)</td>
+                <td>Tested on Windows 10 21H2+ and Windows 11</td>
+              </tr>
+              <tr>
+                <td>Network Adapter</td>
+                <td>Wi-Fi (802.11n or newer)</td>
+                <td>Required for Wi-Fi transport (port 8081) & Remote Screen</td>
+              </tr>
+              <tr>
+                <td>Bluetooth (Optional)</td>
+                <td>Bluetooth 4.0+ (BR/EDR + BLE)</td>
+                <td>Required for offline / direct Bluetooth input control</td>
+              </tr>
+              <tr>
+                <td>Graphics Driver</td>
+                <td>DirectX 11 capable GPU</td>
+                <td>Required for hardware-accelerated Remote Screen capture</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Installation Process -->
+      <div class="content-section reveal">
+        <h2 class="section-title">Installation Walkthrough</h2>
+        <ol class="steps-list">
+          <li class="step-item">
+            <h3 class="step-title">1. Download and Verify Checksum</h3>
+            <p class="step-desc">
+              Download <code>{RELEASE_CONFIG.WINDOWS.FILENAME}</code> directly from the official GitHub release. Compute its SHA-256 hash in PowerShell to confirm file integrity before opening.
+            </p>
+          </li>
+
+          <li class="step-item">
+            <h3 class="step-title">2. Windows SmartScreen Prompt</h3>
+            <p class="step-desc">
+              Because this binary is newly published and not code-signed yet, Windows Defender SmartScreen may display <em>"Windows protected your PC"</em>.
+            </p>
+            <div class="notice-box">
+              <div class="notice-title">How to proceed:</div>
+              <div class="notice-body">
+                Click <strong>"More info"</strong> on the dialog, then click <strong>"Run anyway"</strong>. Only do this after verifying that the file was downloaded from the official GitHub repository and that its SHA-256 checksum matches.
+              </div>
+            </div>
+          </li>
+
+          <li class="step-item">
+            <h3 class="step-title">3. Inno Setup Wizard</h3>
+            <p class="step-desc">
+              Follow the setup wizard. By default, Pouse installs to your local per-user application directory:
+            </p>
+            <div class="code-callout">
+              <code>%LOCALAPPDATA%\Programs\Pouse\pouse-pc.exe</code>
+            </div>
+            <p class="step-desc">
+              The installer automatically creates a Windows Firewall rule allowing incoming TCP traffic on port <strong>8081</strong> on Private networks so the mobile app can reach the WebSocket server.
+            </p>
+          </li>
+
+          <li class="step-item">
+            <h3 class="step-title">4. System Tray Launch</h3>
+            <p class="step-desc">
+              When started, Pouse minimizes to the Windows system tray (near your taskbar clock). Right-click the Pouse icon to access:
+            </p>
+            <ul class="tray-features-list">
+              <li><strong>Show IP & QR Code</strong>: Displays your local IP address and pairing QR code in a terminal window.</li>
+              <li><strong>Preferences...</strong>: Configure startup with Windows, custom port, and optional Wi-Fi password.</li>
+              <li><strong>Check for Updates</strong>: Opens the official GitHub Releases page in your default browser.</li>
+              <li><strong>Quit Pouse</strong>: Cleanly restores Bluetooth discoverability state and shuts down all server threads.</li>
+            </ul>
+          </li>
+        </ol>
+      </div>
+
+      <!-- Windows Client Interface Showcase -->
+      <div class="content-section content-visibility-auto reveal">
+        <h2 class="section-title" style="text-align: center; margin-bottom: 24px;">Windows Client Interface</h2>
+        <div class="windows-screens-row">
+          <PlaceholderSlot
+            assetId="pc-tray-menu"
+            label="System Tray Menu &amp; QR Display"
+            description="Win32 system tray context menu and IP/QR code pairing prompt."
+            aspectRatio="4/3"
+            deviceType="desktop"
+          />
+          <PlaceholderSlot
+            assetId="pc-preferences"
+            label="Windows Client Preferences"
+            description="Preferences dialog with auto-start, custom port, and optional DPAPI password."
+            aspectRatio="16/9"
+            deviceType="desktop"
+          />
+        </div>
+      </div>
+
+      <!-- Hash Verifier -->
+      <div class="content-section reveal">
+        <HashVerifier />
+      </div>
+
+      <!-- Uninstallation -->
+      <div class="content-section reveal">
+        <h2 class="section-title">Uninstallation</h2>
+        <p>
+          To cleanly remove Pouse from your system:
+        </p>
+        <ul class="steps-list-plain">
+          <li>Open Windows <strong>Settings → Apps → Installed apps</strong>, locate <strong>Pouse</strong>, and click <strong>Uninstall</strong>.</li>
+          <li>Alternatively, run <code>pouse uninstall</code> if installed via the CLI tool.</li>
+          <li>The uninstaller automatically removes the executable, desktop shortcuts, and the Windows Firewall rule. Configuration files in <code>%APPDATA%\Pouse</code> are preserved unless deleted manually.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .subpage-wrap {
+    padding: 48px 0 96px;
+  }
+
+  .subpage-header {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 36px;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.88rem;
+    color: var(--color-text-muted);
+  }
+
+  .breadcrumb a {
+    color: var(--color-purple-light);
+    text-decoration: none;
+  }
+
+  .page-title {
+    font-size: clamp(2rem, 3.5vw + 0.5rem, 2.8rem);
+  }
+
+  .page-subtitle {
+    font-size: 1.05rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+  }
+
+  .quick-download-banner {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 28px 32px;
+    margin-bottom: 40px;
+    background: linear-gradient(135deg, rgba(13, 7, 21, 0.9) 0%, rgba(22, 13, 37, 0.9) 100%);
+    border-color: var(--color-border-medium);
+  }
+
+  @media (min-width: 680px) {
+    .quick-download-banner {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+
+  .banner-title {
+    font-size: 1.3rem;
+    margin-bottom: 6px;
+  }
+
+  .banner-meta {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+  }
+
+  .content-section {
+    margin-bottom: 48px;
+  }
+
+  .section-title {
+    font-size: var(--text-section);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--color-border-subtle);
+  }
+
+  .steps-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .step-item {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .step-title {
+    font-size: var(--text-card);
+    color: var(--color-text-primary);
+  }
+
+  .step-desc {
+    font-size: 0.92rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .step-desc code {
+    color: var(--color-purple-light);
+  }
+
+  .code-callout {
+    background-color: var(--color-bg-canvas);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 8px;
+    padding: 10px 16px;
+    margin: 6px 0;
+  }
+
+  .code-callout code {
+    font-size: 0.88rem;
+    color: #F8FAFC;
+    word-break: break-all;
+  }
+
+  .tray-features-list, .steps-list-plain {
+    list-style: disc;
+    padding-left: 20px;
+    font-size: 0.92rem;
+    color: var(--color-text-secondary);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .windows-screens-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 28px;
+    align-items: center;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  @media (min-width: 768px) {
+    .windows-screens-row {
+      grid-template-columns: 1fr 1.3fr;
+    }
+  }
+</style>
